@@ -1,0 +1,15 @@
+Package a instalar
+
+Install-Package Microsoft.EntityFrameworkCore
+Install-Package Microsoft.EntityFrameworkCore.Tools
+Install-Package Microsoft.EntityFrameworkCore.Design
+Install-Package Npgsql.EntityFrameworkCore.PostgreSQL
+Install-Package Npgsq
+Install-Package AutoMapper
+Install-Package AutoMapper.Extensions.Microsoft.DependencyInjection
+Install-Package MatBlazor 
+
+
+Comando Scaffold-DbContext (No Ejecutar)
+
+Scaffold-DbContext -Provider Npgsql.EntityFrameworkCore.PostgreSQL -Connection "Host=ec2-54-145-249-177.compute-1.amazonaws.com;Port=5432;Database=dfd2guu5v5usvl;User Id=rjeztvswcvayyn;Password=30ac2b900f2293dd6bad19e9d763a213042fb4125258fdd3f0449a4a1ed24c18;SSL Mode=Require;Trust Server Certificate=true"
