@@ -14,7 +14,7 @@ namespace AppVacunas.Server.DTOs {
         public int EstatusVacuna { get; set; }
         public DateTime? FechaDosis1 { get; set; }
         public DateTime? FechaDosis2 { get; set; }
-      //  public int? DireccionId { get; set; }
+        public int? DireccionId { get; set; }
         public int? VacunaId { get; set; }
     }
 }

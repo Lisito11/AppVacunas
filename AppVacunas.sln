@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppVacunas.Server", "AppVacunas\Server\AppVacunas.Server.csproj", "{8EED38B8-9827-444A-9D8D-05A19AE6D883}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppVacunas.Server", "AppVacunas\Server\AppVacunas.Server.csproj", "{8EED38B8-9827-444A-9D8D-05A19AE6D883}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppVacunas.Client", "AppVacunas\Client\AppVacunas.Client.csproj", "{00E3AE76-E665-4340-8374-F012152D2550}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppVacunas.Client", "AppVacunas\Client\AppVacunas.Client.csproj", "{00E3AE76-E665-4340-8374-F012152D2550}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppVacunas.Shared", "AppVacunas\Shared\AppVacunas.Shared.csproj", "{E124C1A5-4117-4463-A290-9B532B0426A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppVacunas.Shared", "AppVacunas\Shared\AppVacunas.Shared.csproj", "{E124C1A5-4117-4463-A290-9B532B0426A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

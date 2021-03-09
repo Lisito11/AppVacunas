@@ -1,0 +1,90 @@
+﻿@page "/ejercicio1"
+<EditForm Model="Cedula" OnValidSubmit=@GetCedula>
+    <DataAnnotationsValidator />
+    <div class="form-row">
+        <div class="col">
+            <InputText @bind-Value=Cedula.Cedula placeholder="Ingrese una cedula" class="form-control" />
+        </div>
+        <div class="col">
+            <input type="submit" value="Aceptar" class="btn btn-primary" />
+            <input type="button" @onclick="@Clear" value="Reiniciar" class="btn btn-info" />
+        </div>
+    </div>
+</EditForm>
+<br />
+@if (validacion) {
+    <div class="row gutters-sm">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-column align-items-center text-center">
+                        <img src="@foto" alt="Admin" class="rounded-circle" width="150">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-8">
+            <div class="card mb-3">
+                @foreach (var dato in Datos) {
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">@dato.Name</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">@dato.Dato</div>
+                    </div>
+                    <hr>
+                }
+            </div>
+        </div>
+    </div>
+} else {
+    @mensaje
+}
+
+
+
+
+@code {
+    public string CedulaDigitada { get; set; }
+    CedulaApi Cedula = new CedulaApi();
+    string mensaje;
+    bool validacion = false;
+    List<Data> Datos;
+    string nombres, apellidos, fechanacimiento, foto, signo, mes, dia;
+    public async Task GetCedula() {
+        Cedula = await Http.GetFromJsonAsync<CedulaApi>("https://api.adamix.net/apec/cedula/" + Cedula.Cedula);
+
+        if (Cedula.Ok) {
+            foto = Cedula.Foto.ToString();
+            nombres = Cedula.Nombres.ToString();
+            apellidos = $"{Cedula.Apellido1} {Cedula.Apellido2}";
+            fechanacimiento = Cedula.FechaNacimiento.Substring(0, 11);
+            signo = SignoZodiacal.GetSigno(Cedula.FechaNacimiento);
+            Datos = new List<Data>() {
+                    new Data() { Name = "Nombres", Dato = nombres},
+                    new Data() { Name = "Apellidos", Dato = apellidos },
+                    new Data() { Name = "Fecha de nacimiento", Dato = fechanacimiento},
+                    new Data() { Name = "Signo Zodiacal", Dato = signo},
+                };
+            validacion = true;
+        } else {
+            mensaje = "No se encontro ninguna cedula";
+
+        }
+
+    }
+
+    private void Clear() {
+        Cedula.Cedula = "";
+        validacion = false;
+    }
+
+    class Data {
+        public string Name { get; set; }
+        public string Dato { get; set; }
+    }
+
+
+
+}
