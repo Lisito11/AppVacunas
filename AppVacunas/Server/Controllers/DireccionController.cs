@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AppVacunas.Server.Controllers {
     [ApiController]
-    [Route("api/direccion")]
+    [Route("api/direcciones")]
     public class DireccionController : CustomBaseController {
         public DireccionController(dfd2guu5v5usvlContext context, IMapper mapper) : base(context, mapper) { }
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AppVacunas.Server.Controllers {
     [ApiController]
-    [Route("api/provincia")]
+    [Route("api/provincias")]
     public class ProvinciaController : CustomBaseController {
         public ProvinciaController(dfd2guu5v5usvlContext context, IMapper mapper) : base(context, mapper) { }
 

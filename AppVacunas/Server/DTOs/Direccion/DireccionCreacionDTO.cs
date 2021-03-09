@@ -11,6 +11,5 @@ namespace AppVacunas.Server.DTOs.Direccion {
         public string Sector { get; set; }
         public int? ProvinciaId { get; set; }
         public int? PaisId { get; set; }
-
     }
 }

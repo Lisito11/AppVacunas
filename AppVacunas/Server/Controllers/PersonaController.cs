@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AppVacunas.Server.Controllers {
     [ApiController]
-    [Route("api/persona")]
+    [Route("api/personas")]
     public class PersonaController : CustomBaseController {
         public PersonaController(dfd2guu5v5usvlContext context, IMapper mapper) : base(context, mapper) {}
 

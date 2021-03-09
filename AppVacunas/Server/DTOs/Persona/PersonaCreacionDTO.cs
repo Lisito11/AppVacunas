@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace AppVacunas.Server.DTOs {
     public class PersonaCreacionDTO {
+
         public string Cedula { get; set; }
         public string Nombres { get; set; }
         public string Apellido1 { get; set; }

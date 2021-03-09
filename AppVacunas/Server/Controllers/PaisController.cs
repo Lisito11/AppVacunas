@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AppVacunas.Server.Controllers {
     [ApiController]
-    [Route("api/pais")]
+    [Route("api/paises")]
     public class PaisController : CustomBaseController {
         public PaisController(dfd2guu5v5usvlContext context, IMapper mapper) : base(context, mapper) { }
 

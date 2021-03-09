@@ -5,6 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AppVacunas.Shared {
-    class Provincia {
+    public class Provincia {
+        public string NombreProvincia { get; set; }
+        public int? PaisId { get; set; }
+        public int Id { get; set; }
+        public virtual Pais Pais { get; set; }
+        public virtual ICollection<Direccion> Direcciones { get; set; }
     }
 }
