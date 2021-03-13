@@ -1,4 +1,93 @@
 ﻿@inherits LayoutComponentBase
+<MatThemeProvider Theme="@theme">
+<MatAppBarContainer Style="width: 100vw; height: 100vh; ">
+    <MatAppBar Fixed="true" Style="z-index: 100;">
+        <MatAppBarRow>
+            <MatAppBarSection>
+                <MatIconButton Icon="menu" OnClick="@((e) => ButtonClicked())"></MatIconButton>
+                <MatAppBarTitle>App Vacunas</MatAppBarTitle>
+            </MatAppBarSection>
+            <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+                <MatIconButton Icon="account_circle"></MatIconButton>
+            </MatAppBarSection>
+
+        </MatAppBarRow>
+    </MatAppBar>
+
+    <MatAppBarContent>
+        <MatDrawer Style="position: fixed;" @bind-Opened="@Opened">
+            <img class="img-fluid" src="https://cdn.pixabay.com/photo/2021/01/02/18/39/syringe-5882593_960_720.jpg" />
+            <MatDivider />
+            <MatNavMenu>
+                <MatNavItem><MatIcon Icon="home"></MatIcon>&nbsp; Inicio </MatNavItem>
+                <MatNavItem><MatIcon Icon="medical_services"></MatIcon>&nbsp; Registrar</MatNavItem>
+                <MatNavItem><MatIcon Icon="local_hospital"></MatIcon>&nbsp; Consultar</MatNavItem>
+                <MatNavItem><MatIcon Icon="location_on"></MatIcon>&nbsp; Provincias </MatNavItem>
+                <MatNavItem><MatIcon Icon="health_and_safety"></MatIcon>&nbsp; Marca Vacunas </MatNavItem>
+                <MatNavItem><MatIcon Icon="bolt"></MatIcon>&nbsp; Signos Zodiacal </MatNavItem>
+                <MatNavItem><MatIcon Icon="cancel"></MatIcon>&nbsp; Anular Vacunado</MatNavItem>
+                <MatNavItem><MatIcon Icon="settings_applications"></MatIcon>&nbsp; Configuración </MatNavItem>
+            </MatNavMenu>
+        </MatDrawer>
+        <MatDrawerContent>
+            @Body
+        </MatDrawerContent>
+    </MatAppBarContent>
+</MatAppBarContainer>
+
+<MatFAB Class="app-fab--absolute" Icon="@MatIconNames.Help"></MatFAB>
+</MatThemeProvider>
+
+<style>
+    .app-fab--absolute {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+    }
+
+    .mat-card-img {
+        font-size: 70px;
+        margin: auto;
+    }
+</style>
+
+
+@code{
+    bool Opened = true;
+
+    void ButtonClicked() {
+        Opened = !Opened;
+    }
+
+    MatTheme theme = new MatTheme() {
+        Primary = "#009be5",
+        Secondary = "#9c27b0"
+    };
+
+    MatTheme Blacktheme = new MatTheme() {
+        Primary = "green",
+        Secondary = "orange"
+    };
+
+
+    bool toggle = false;
+    string icono = "notifications_none";
+    void IsToggle() {
+        if (!toggle) {
+            toggle = true;
+            icono = "notifications";
+        } else {
+            toggle = false;
+            icono = "notifications_none";
+        }
+    }
+    DateTime? FeaturesDateTime = DateTime.Now;
+
+
+}
+
+
+
 
 <div class="page">
     <div class="sidebar">
