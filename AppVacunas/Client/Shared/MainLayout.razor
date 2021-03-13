@@ -8,7 +8,7 @@
                 <MatAppBarTitle>App Vacunas</MatAppBarTitle>
             </MatAppBarSection>
             <MatAppBarSection Align="@MatAppBarSectionAlign.End">
-                <MatIconButton Icon="account_circle"></MatIconButton>
+                <MatIconButton Icon="home"></MatIconButton>
             </MatAppBarSection>
 
         </MatAppBarRow>
@@ -19,14 +19,14 @@
             <img class="img-fluid" src="https://cdn.pixabay.com/photo/2021/01/02/18/39/syringe-5882593_960_720.jpg" />
             <MatDivider />
             <MatNavMenu>
-                <MatNavItem><MatIcon Icon="home"></MatIcon>&nbsp; Inicio </MatNavItem>
-                <MatNavItem><MatIcon Icon="medical_services"></MatIcon>&nbsp; Registrar</MatNavItem>
-                <MatNavItem><MatIcon Icon="local_hospital"></MatIcon>&nbsp; Consultar</MatNavItem>
-                <MatNavItem><MatIcon Icon="location_on"></MatIcon>&nbsp; Provincias </MatNavItem>
-                <MatNavItem><MatIcon Icon="health_and_safety"></MatIcon>&nbsp; Marca Vacunas </MatNavItem>
-                <MatNavItem><MatIcon Icon="bolt"></MatIcon>&nbsp; Signos Zodiacal </MatNavItem>
-                <MatNavItem><MatIcon Icon="cancel"></MatIcon>&nbsp; Anular Vacunado</MatNavItem>
-                <MatNavItem><MatIcon Icon="settings_applications"></MatIcon>&nbsp; Configuración </MatNavItem>
+                <MatNavItem Href="/"><MatIcon Icon="home"></MatIcon>&nbsp; Inicio </MatNavItem>
+                <MatNavItem Href="registrar"><MatIcon Icon="medical_services"></MatIcon>&nbsp; Registrar</MatNavItem>
+                <MatNavItem Href="consultar"><MatIcon Icon="local_hospital"></MatIcon>&nbsp; Consultar</MatNavItem>
+                <MatNavItem Href="provinciasvacunadas"><MatIcon Icon="location_on"></MatIcon>&nbsp; Provincias </MatNavItem>
+                <MatNavItem Href="marcavacunas"><MatIcon Icon="health_and_safety"></MatIcon>&nbsp; Marca Vacunas </MatNavItem>
+                <MatNavItem Href="signozodiacal"><MatIcon Icon="bolt"></MatIcon>&nbsp; Signos Zodiacal </MatNavItem>
+                <MatNavItem Href="anularvacunado"><MatIcon Icon="cancel"></MatIcon>&nbsp; Anular Vacunado</MatNavItem>
+                <MatNavItem Href="configuracion"><MatIcon Icon="settings_applications"></MatIcon>&nbsp; Configuración </MatNavItem>
             </MatNavMenu>
         </MatDrawer>
         <MatDrawerContent>
@@ -34,8 +34,9 @@
         </MatDrawerContent>
     </MatAppBarContent>
 </MatAppBarContainer>
-
-<MatFAB Class="app-fab--absolute" Icon="@MatIconNames.Help"></MatFAB>
+<a href="registrar">
+    <MatFAB Class="app-fab--absolute" Icon="medical_services"></MatFAB>
+</a>
 </MatThemeProvider>
 
 <style>

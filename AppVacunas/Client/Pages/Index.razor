@@ -1,3 +1,42 @@
 ﻿@page "/"
 
-<h1>Hola mundo!</h1>
+<div class="mat-layout-grid mat-layout-grid-align-left">
+    <div class="mat-layout-grid-inner">
+        @foreach (var card in cardsPaginas) {
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                <NavLink href="@card.Link" style="text-decoration:none; color:black;">
+                    <MatCard>
+                        <MatCardContent Class="text-center">
+                            <div>
+                                <MatIcon Icon="@card.Icono" Class="mat-card-img"></MatIcon>
+                            </div>
+                            <div>
+                                <h6 class="mat-subtitle2">@card.Nombre</h6>
+                            </div>
+                        </MatCardContent>
+                    </MatCard>
+                </NavLink>
+            </div>
+        }
+    </div>
+</div>
+
+
+@code{
+    private class CustomCard {
+        public string Link { get; set; }
+        public string Nombre { get; set; }
+        public string Icono { get; set; }
+    }
+
+    List<CustomCard> cardsPaginas = new List<CustomCard>() {
+        new CustomCard { Link = "registrar", Nombre = "Registrar", Icono = "medical_services" },
+        new CustomCard { Link = "consultar", Nombre = "Consultar Vacunados", Icono = "local_hospital" },
+        new CustomCard { Link = "provinciasvacunadas", Nombre = "Provincias Vacunadas", Icono = "location_on" },
+        new CustomCard { Link = "marcavacunas", Nombre = "Vacunados Marca Vacunas", Icono = "health_and_safety" },
+        new CustomCard { Link = "signozodiacal", Nombre = "Vacunados Signo Zodiacal", Icono = "bolt" },
+        new CustomCard { Link = "anularvacunado", Nombre = "Anular Vacunado", Icono = "cancel" },
+        new CustomCard { Link = "configuracion", Nombre = "Configuración", Icono = "settings_applications" }
+    };
+
+}
