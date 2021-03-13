@@ -1,4 +1,186 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+
+
+<h1>Formulario</h1>
+
+@using System.ComponentModel.DataAnnotations
+
+<EditForm Model="person" OnInvalidSubmit="ValidFormSubmitted">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+
+    <label>
+        Cedula:<br />
+
+        <InputText id="IDCedula" @bind-Value="person.Cedula"></InputText>
+    </label>
+    <br />
+    <br />
+
+    <label>
+        Nombre:<br />
+        <InputText id="IDname" @bind-Value="person.Nombre"></InputText>
+    </label>
+    <br />
+    <br />
+
+    <label>
+        Primer Apellido :<br />
+        <InputText id="IDApelido1" @bind-Value="person.Apellido1"></InputText>
+    </label>
+    <br />
+    <br />
+
+    <label>
+        Segundo Apellido:<br />
+        <InputText id="IDApelido2" @bind-Value="person.Apellido2"></InputText>
+    </label>
+    <br />
+    <br />
+
+    <label>
+        Fecha de Nacimiento :<br />
+        <InputDate id="IDFechaNacimiento" @bind-Value="person.FechaNacimiento"></InputDate>
+    </label>
+    <br />
+    <br />
+
+    <label>
+        Telefono:<br />
+        <InputText id="IDTelefono" @bind-Value="person.Telefono"></InputText>
+    </label>
+    <br />
+    <br />
+
+
+    <label>
+        Estatus Vacuna :<br />
+        <InputText id="IDEstatusVacuna" @bind-Value="person.EstatusVacuna"></InputText>
+    </label>
+    <br />
+    <br />
+
+
+
+    <label>
+        Estatus Vacuna :<br />
+        <InputText id="IDEstatusVacuna" @bind-Value="person.EstatusVacuna"></InputText>
+    </label>
+    <br />
+    <br />
+
+    <label>
+        Dirrecion :<br />
+        <InputText id="IDDireccion" @bind-Value="person.Direccion"></InputText>
+    </label>
+    <br />
+    <br />
+
+    <label>
+        Fecha de la Primera Dosis :<br />
+        <InputDate id="IDFechaDosis1" @bind-Value="person.FechaDosis1"></InputDate>
+    </label>
+    <br />
+    <br />
+
+    <label>
+        Fecha de la Primera Dosis:<br />
+        <InputDate id="IDFechaFechaDosis2" @bind-Value="person.FechaDosis2"></InputDate>
+    </label>
+    <br />
+    <br />
+
+    <label>
+        Vacuna :<br />
+        <InputText id="IDVacuna" @bind-Value="person.VacunaID"></InputText>
+    </label>
+    <br />
+    <br />
+
+
+    @* Firt Name:<br />
+            <InputNumber id="emp_number" @bind-Value="person.EmployeeNumber"></InputNumber>
+        </label>
+        <br />
+        <br />
+
+        <label>
+            Firt Name:<br />
+            <InputText id="email" @bind-Value="person.Email"></InputText>
+        </label>
+        <br />
+        <br />*@
+
+
+    <input type="submit" value="Submit" />
+</EditForm>
+
+@code{
+    Person person = new Person();
+
+    private void ValidFormSubmitted()
+    {
+
+    }
+
+    class Person
+    {
+        [Required]
+        [StringLength(11)]
+        public string Cedula { get; set; }
+
+        [Required]
+        [StringLength(60)]
+        public string Nombre { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string Apellido1 { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string Apellido2 { get; set; }
+
+        [Required]
+        [StringLength(20)]
+        public string FechaNacimiento { get; set; }
+
+        [Required]
+        [StringLength(15)]
+        public string Telefono { get; set; }
+
+        [Required]
+        [StringLength(2)]
+        public string EstatusVacuna { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string Direccion { get; set; }
+
+        [Required]
+        [StringLength(20)]
+        public string FechaDosis1 { get; set; }
+
+        [Required]
+        [StringLength(20)]
+        public string FechaDosis2 { get; set; }
+
+        [Required]
+        [StringLength(20)]
+        public string VacunaID { get; set; }
+
+
+
+
+        @* [Required]
+            [StringLength(100)]
+            public int EmployeeNumber { get; set; }
+
+            [Required]
+            [StringLength(100)]
+            public string Email { get; set; }*@
+
+    }
+}
 
