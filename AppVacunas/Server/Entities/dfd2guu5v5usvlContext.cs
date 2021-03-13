@@ -23,14 +23,6 @@ namespace AppVacunas.Server
         public virtual DbSet<Provincia> Provincia { get; set; }
         public virtual DbSet<Vacuna> Vacunas { get; set; }
 
-         /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseNpgsql("Dbconnection");
-            }
-        }*/
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "en_US.UTF-8");

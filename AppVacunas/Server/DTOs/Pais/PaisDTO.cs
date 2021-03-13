@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 namespace AppVacunas.Server.DTOs.Pais {
     public class PaisDTO : PaisCreacionDTO {
         public int Id { get; set; }
-        public virtual ICollection<DireccionDTO> Direcciones { get; set; }
         public virtual ICollection<ProvinciaDTO> Provincia { get; set; }
         public virtual ICollection<VacunaDTO> Vacunas { get; set; }
     }

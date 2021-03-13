@@ -8,7 +8,7 @@ Install-Package Npgsq
 Install-Package AutoMapper
 Install-Package AutoMapper.Extensions.Microsoft.DependencyInjection
 Install-Package MatBlazor 
-
+Install-Package Microsoft.AspNetCore.Mvc.NewtonsoftJson
 
 Comando Scaffold-DbContext (No Ejecutar)
 

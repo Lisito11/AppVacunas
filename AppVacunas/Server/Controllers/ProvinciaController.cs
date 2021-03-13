@@ -1,6 +1,7 @@
 ﻿using AppVacunas.Server.DTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,18 @@ namespace AppVacunas.Server.Controllers {
     [ApiController]
     [Route("api/provincias")]
     public class ProvinciaController : CustomBaseController {
-        public ProvinciaController(dfd2guu5v5usvlContext context, IMapper mapper) : base(context, mapper) { }
+        private readonly dfd2guu5v5usvlContext context;
+        private readonly IMapper mapper;
+        public ProvinciaController(dfd2guu5v5usvlContext context, IMapper mapper) : base(context, mapper) {
+            this.context = context;
+            this.mapper = mapper;
+        }
 
         //Metodo Get
         [HttpGet]
         public async Task<ActionResult<List<ProvinciaDTO>>> Get() {
-            return await Get<Provincia, ProvinciaDTO>();
+            var provinciasPersonas = await context.Provincia.Include(x => x.Direcciones).ToListAsync();
+            return mapper.Map<List<ProvinciaDTO>>(provinciasPersonas);
         }
 
         //Metodo Get(id)
