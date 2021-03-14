@@ -10,17 +10,19 @@ else
 {
 
 
-<MudSelect T="string" Label="Provincias">
+<MudSelect T="string" Label="Provincias" @bind-Value="ProvinciaSeleccionada">
 
     @foreach (var provincia in provincias)
     {
-        <MudSelectItem Value="@provincia.NombreProvincia" />
+        <MudSelectItem Value="@provincia.Id.ToString()"> @provincia.NombreProvincia </MudSelectItem>
+
     }
 
- 
 </MudSelect>
 
-    <MudTable Items="@personas" Hover="@true" Striped="@true" Filter="new Func<Persona, bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
+<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="@FiltrarProvincia">Buscar</MudButton>
+
+    <MudTable Items="@PersonasProvincias" Hover="@true" Striped="@true" Filter="new Func<Persona, bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
         <ToolBarContent>
             <MudText Typo="Typo.h6">Personas Vacunadas </MudText>
             <MudToolBarSpacer />
@@ -54,6 +56,10 @@ else
 }
 @code {
 
+    public string ProvinciaSeleccionada { get; set; }
+
+    private List<Persona> PersonasProvincias = new List<Persona>();
+
     private List<Provincia> provincias = new List<Provincia>();
 
     private HashSet<Persona> selectedItems = new HashSet<Persona>();
@@ -68,6 +74,15 @@ else
     {
         personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
         provincias = await Http.GetFromJsonAsync<List<Provincia>>("api/provincias");
+
+    }
+
+    void FiltrarProvincia()
+    {
+        if (!String.IsNullOrEmpty(ProvinciaSeleccionada))
+        {
+            PersonasProvincias = personas.Where(persona => persona.Direccion.Provincia.Id == int.Parse(ProvinciaSeleccionada)).ToList();
+        }
 
     }
 
