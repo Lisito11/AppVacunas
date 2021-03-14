@@ -12,8 +12,8 @@
             <MudCardContent>
                 <MudTextField Label="Cedula " HelperText="Max. 8 characters"
                               @bind-Value="model.Cedula" For="@(() => model.Cedula)" />
-                <MudTextField Label="First name" HelperText="Max. 8 characters"
-                              @bind-Value="model.Username" For="@(() => model.Username)" />
+                <MudTextField Label="Primer Nombre " HelperText="Max. 8 characters"
+                              @bind-Value="model.Nombre" For="@(() => model.Nombre)" />
                 <MudTextField Label="Email" Class="mt-3"
                               @bind-Value="model.Email" For="@(() => model.Email)" />
                
@@ -66,7 +66,7 @@
 
         [Required]
         [StringLength(8, ErrorMessage = "Name length can't be more than 8.")]
-        public string Username { get; set; }
+        public string Nombre { get; set; }
 
         [Required]
         [EmailAddress]
