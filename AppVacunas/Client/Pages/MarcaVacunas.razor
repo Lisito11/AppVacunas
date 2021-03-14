@@ -3,4 +3,60 @@
 <h3>MarcaVacunas</h3>
 
 
+@if (personas == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="@TraerVacunados">Buscar</MudButton>
 
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre de vacunas</th>
+                <th>Cantidad de vacuandos</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (traer)
+            {
+                @foreach (var vacuna in vacunados)
+                {
+                    <tr>
+                        <td>@vacuna.NombreVacuna</td>
+                        <td>@vacuna.CantidadPersonas</td>
+                    </tr>
+                }
+            }
+
+
+        </tbody>
+    </table>
+}
+@code {
+
+    bool traer = false;
+
+    void TraerVacunados()
+    {
+        traer = true;
+        vacunados = FiltrarVacunados();
+    }
+
+    private List<Persona> personas = new List<Persona>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
+
+
+    }
+
+    dynamic vacunados;
+
+    dynamic FiltrarVacunados() => personas.GroupBy(x => x.Vacuna.Nombre).Select(group => new { NombreVacuna = group.Key, CantidadPersonas = group.Count() });
+
+
+}
