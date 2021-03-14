@@ -23,5 +23,8 @@ namespace AppVacunas.Client {
             await builder.Build().RunAsync();
 
         }
+
+
+
     }
 }

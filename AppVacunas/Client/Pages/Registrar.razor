@@ -1,200 +1,206 @@
 ﻿@page "/registrar"
+@inject ISnackbar Snackbar
+@using Helpers
+<h1>Registrar Vacunado</h1>
 
-<h1>Formulario</h1>
+@inject NavigationManager navigationManager
+<MudGrid Justify="Justify.Center">
+    @if (!visible) {
+        <MudItem xs="6">
+            <MudCard>
+                <MudCardContent>
+                    <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                        <MudTextField T="string" Label="Cédula" Required="true" RequiredError="@MensajeError("Cédula")" @bind-Value="@CedulaSeleccionada" TextChanged="BuscarDatosCedula" />
+                        <MudTextField T="string" Label="Nombres" Required="true" RequiredError="@MensajeError("Nombres")" @bind-Value="@datosCedula.Nombres" />
+                        <MudTextField T="string" Label="Primer Apellido" Required="true" RequiredError="@MensajeError("Primer Apellido")" @bind-Value="Apellido1" />
+                        <MudTextField T="string" Label="Segundo Apellido" Required="true" RequiredError="@MensajeError("Segundo Apellido")" @bind-Value="Apellido2" />
+                        <MudTextField T="string" Label="Teléfono" RequiredError="@MensajeError("Teléfono")" @bind-Value="Telefono" />
 
-@using System.ComponentModel.DataAnnotations
+                        <MudDatePicker Label="Fecha de Nacimiento" @bind-Text="FechaNacimiento" Editable="true" />
 
-
-<EditForm Model="person" OnInvalidSubmit="ValidFormSubmitted">
-    <DataAnnotationsValidator></DataAnnotationsValidator>
-    <ValidationSummary></ValidationSummary>
-
-    <label>
-        Cedula:<br />
-
-        <InputText id="IDCedula" @bind-Value="person.Cedula"></InputText>
-    </label>
-    <br />
-    <br />
-
-    <label>
-        Nombre:<br />
-        <InputText id="IDname" @bind-Value="person.Nombre"></InputText>
-    </label>
-    <br />
-    <br />
-
-    <label>
-        Primer Apellido :<br />
-        <InputText id="IDApelido1" @bind-Value="person.Apellido1"></InputText>
-    </label>
-    <br />
-    <br />
-
-    <label>
-        Segundo Apellido:<br />
-        <InputText id="IDApelido2" @bind-Value="person.Apellido2"></InputText>
-    </label>
-    <br />
-    <br />
-
-    <label>
-        Fecha de Nacimiento :<br />
-        <InputDate id="IDFechaNacimiento" @bind-Value="person.FechaNacimiento"></InputDate>
-    </label>
-    <br />
-    <br />
-
-    <label>
-        Telefono:<br />
-        <InputText id="IDTelefono" @bind-Value="person.Telefono"></InputText>
-    </label>
-    <br />
-    <br />
-
-    @*
-        <label>
-            Estatus Vacuna :<br />
-            <InputText id="IDEstatusVacuna" @bind-Value="person.EstatusVacuna"></InputText>
-        </label>
-        <br />
-        <br />
+                        <MudSelect T="string" Label="Provincias" @bind-Value="ProvinciaSeleccionada">
+                            @foreach (var provincia in provincias) {<MudSelectItem Value="@provincia.Id.ToString()"> @provincia.NombreProvincia </MudSelectItem>}
+                        </MudSelect>
 
 
-
-        <label>
-            Estatus Vacuna :<br />
-            <InputText id="IDEstatusVacuna" @bind-Value="person.EstatusVacuna"></InputText>
-        </label>
-        <br />
-        <br />
-
-    *@
-
-    <label>
-        Dirrecion :<br />
-        <InputText id="IDDireccion" @bind-Value="person.Direccion"></InputText>
-    </label>
-    <br />
-    <br />
-
-    <label>
-        Fecha de la Primera Dosis :<br />
-        <InputDate id="IDFechaDosis1" @bind-Value="person.FechaDosis1"></InputDate>
-    </label>
-    <br />
-    <br />
-
-    <label>
-        Fecha de la Primera Dosis:<br />
-        <InputDate id="IDFechaFechaDosis2" @bind-Value="person.FechaDosis2"></InputDate>
-    </label>
-    <br />
-    <br />
-
-    <label>
-        Vacuna :<br />
-        <InputText id="IDVacuna" @bind-Value="person.VacunaID"></InputText>
-    </label>
-    <br />
-    <br />
+                        <MudSelect T="string" Label="Vacunas" @bind-Value="VacunaSeleccionada">
+                            @foreach (var vacuna in vacunas) {<MudSelectItem Value="@vacuna.Id.ToString()"> @vacuna.Nombre </MudSelectItem>}
+                        </MudSelect>
 
 
-    @* Firt Name:<br />
-            <InputNumber id="emp_number" @bind-Value="person.EmployeeNumber"></InputNumber>
-        </label>
-        <br />
-        <br />
+                        <MudDatePicker Label="Fecha Primera Dosis" @bind-Date="fechaPrimeraDosis" />
 
-        <label>
-            Firt Name:<br />
-            <InputText id="email" @bind-Value="person.Email"></InputText>
-        </label>
-        <br />
-        <br />*@
+                    </MudForm>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton OnClick="@RegistrarVacunado" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Registrar Vacunado</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    }
+    @if (visible) {
+        <MudItem xs="6">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Vacunado</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudPaper>
+                        <MudText>@PersonaValidada.Nombres @PersonaValidada.Apellido1 @PersonaValidada.Apellido2 </MudText>
+                        <MudText>@PersonaValidada.Vacuna.Nombre</MudText>
+                        <MudDivider DividerType="DividerType.Middle" Class="my-6" />
+                        <MudText Typo="Typo.body1">Primera dosis: @PrimeraDosisValidada</MudText>
+                    </MudPaper>
+                    <MudDatePicker Label="Fecha Segunda Dosis" @bind-Date="fechaSegundaDosis" Editable="true" TitleDateFormat="yyyy-MM-dd"/>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton OnClick="AgregarSegundaDosis" Variant="Variant.Filled" Color="Color.Primary">Agregar Segunda Dosis</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    }
+</MudGrid>
 
-    <label>
-        Seleccion Pais :
-        <InputSelect @bind-Value="person.Pais">
-            <option value="">Select Pais ...</option>
-            <option value="Exploration">Exploration</option>
-            <option value="Diplomacy">Diplomacy</option>
-            <option value="Defense">Defense</option>
-        </InputSelect>
-    </label>
 
-  
-
-    <input type="submit" value="Submit" />
-</EditForm>
 
 @code{
-    Person person = new Person();
 
-    private void ValidFormSubmitted()
-    {
+    bool success;
+    bool visible = false;
+    string[] errors = { };
+    MudForm form;
+    string MensajeError(string field) => $"{field} debe introducirse!";
+
+    DateTime? fechaPrimeraDosis = DateTime.Today;
+    DateTime? fechaSegundaDosis = DateTime.Today;
+
+    public string Nombres { get; set; }
+    public string Apellido1 { get; set; }
+    public string Apellido2 { get; set; }
+    public string Telefono { get; set; }
+    public string FechaNacimiento { get; set; }
+    public string ProvinciaSeleccionada { get; set; }
+    public string VacunaSeleccionada { get; set; }
+    public string CedulaSeleccionada { get; set; }
+    public string PrimeraDosisValidada { get; set; }
+
+    private List<Provincia> provincias = new List<Provincia>();
+
+    private List<Vacuna> vacunas = new List<Vacuna>();
+
+    private List<Persona> personas = new List<Persona>();
+
+    Persona persona = new Persona();
+
+    private CedulaApi datosCedula = new CedulaApi();
+
+    Persona PersonaValidada = new Persona();
+
+    private List<Direccion> direcciones = new List<Direccion>();
+
+    private Direccion direccionPersona = new Direccion();
+
+
+    private async Task BuscarDatosCedula() {
+        if (!String.IsNullOrEmpty(CedulaSeleccionada) && CedulaSeleccionada.Length == 11) {
+            datosCedula = await Http.GetFromJsonAsync<CedulaApi>($"https://api.adamix.net/apec/cedula/{CedulaSeleccionada}");
+            Nombres = datosCedula.Nombres;
+            Apellido1 = datosCedula.Apellido1;
+            Apellido2 = datosCedula.Apellido2;
+            FechaNacimiento = datosCedula.FechaNacimiento.ToString().Substring(0, 11);
+
+        }
+        //Console.WriteLine(CedulaSeleccionada);
+    }
+
+
+    protected override async Task OnInitializedAsync() {
+        personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
+        provincias = await Http.GetFromJsonAsync<List<Provincia>>("api/provincias");
+        vacunas = await Http.GetFromJsonAsync<List<Vacuna>>("api/vacunas");
+    }
+
+
+    private async Task AgregarSegundaDosis() {
+        /*personaEdit.Nombres = Nombres;
+        personaEdit.Apellido1 = Apellido1;
+        personaEdit.Apellido2 = Apellido2;
+        personaEdit.Cedula = CedulaSeleccionada;
+        personaEdit.Telefono = Telefono;
+        personaEdit.DireccionId = direccionPersona.Id;
+        personaEdit.FechaDosis1 = fechaPrimeraDosis;
+        personaEdit.FechaNacimiento = DateTime.Parse(FechaNacimiento);
+        personaEdit.VacunaId = int.Parse(VacunaSeleccionada);
+        personaEdit.EstatusVacuna = 1;*/
+        string json = "[{\"op\": \"replace\",\"path\": \"/fechaDosis2\",\"value\":" + $"\"{fechaSegundaDosis.Value.ToString("yyyy-MM-dd")}\"" + "}]";
+
+        HttpContent content = new StringContent(json, Encoding.UTF8, "application/json-patch+json");
+        var response = await Http.PatchAsync($"api/personas/{CedulaSeleccionada}", content);
+
+        Console.WriteLine(response.Content);
+
+        //var respuestaPersona = await Http.PutAsJsonAsync("api/personas", personaEdit);
+
+        if (response.IsSuccessStatusCode) {
+            //Redirigiendonos a la pagina de consultar vacunados
+            navigationManager.NavigateTo("consultar");
+        } else {
+            Console.WriteLine();
+        }
 
     }
 
-    class Person
-    {
-        [Required]
-        [StringLength(11)]
-        public string Cedula { get; set; }
 
-        [Required]
-        [StringLength(60)]
-        public string Nombre { get; set; }
+    private async Task RegistrarVacunado() {
+        PersonaValidada = personas.Where(x => x.Cedula == CedulaSeleccionada).FirstOrDefault();
 
-        [Required]
-        [StringLength(50)]
-        public string Apellido1 { get; set; }
+        if (PersonaValidada != null) {
+            if (PersonaValidada.FechaDosis2 == null) {
+                visible = true;
+                Snackbar.Add($"{Nombres} {Apellido1} {Apellido2} Ya se cuentra registrado!", Severity.Info);
+                PrimeraDosisValidada = PersonaValidada.FechaDosis1.ToString().Substring(0, 9);
+            }
+            Snackbar.Add($"{Nombres} {Apellido1} Ya se encuentra registrado y con segunda dosis!", Severity.Info);
+            navigationManager.NavigateTo("consultar");
 
-        [Required]
-        [StringLength(50)]
-        public string Apellido2 { get; set; }
+        } else {
 
-        [Required]
-        [StringLength(20)]
-        public string FechaNacimiento { get; set; }
+            //Creando nueva direccion con la provincia seleccionada
+            Direccion direccion = new Direccion() { ProvinciaId = int.Parse(ProvinciaSeleccionada), PaisId = 1 };
 
-        [Required]
-        [StringLength(15)]
-        public string Telefono { get; set; }
+            var respuesta = await Http.PostAsJsonAsync("api/direcciones", direccion);
 
-        [Required]
-        [StringLength(2)]
-        public string EstatusVacuna { get; set; }
+            if (respuesta.IsSuccessStatusCode) {
+                direcciones = await Http.GetFromJsonAsync<List<Direccion>>("api/direcciones");
+                if (direcciones.Count > 0) {
+                    direccionPersona = direcciones.LastOrDefault();
 
-        [Required]
-        [StringLength(100)]
-        public string Direccion { get; set; }
+                    //Creando persona correctamente
 
-        [Required]
-        [StringLength(20)]
-        public string FechaDosis1 { get; set; }
+                    persona.Nombres = Nombres;
+                    persona.Apellido1 = Apellido1;
+                    persona.Apellido2 = Apellido2;
+                    persona.Cedula = CedulaSeleccionada;
+                    persona.Telefono = Telefono;
+                    persona.DireccionId = direccionPersona.Id;
+                    persona.FechaDosis1 = fechaPrimeraDosis;
+                    persona.FechaNacimiento = DateTime.Parse(FechaNacimiento);
+                    persona.VacunaId = int.Parse(VacunaSeleccionada);
+                    persona.EstatusVacuna = 1;
 
-        [Required]
-        [StringLength(20)]
-        public string FechaDosis2 { get; set; }
+                    var respuestaPersona = await Http.PostAsJsonAsync("api/personas", persona);
 
-        [Required]
-        [StringLength(20)]
-        public string VacunaID { get; set; }
-
-        [Required]
-        [StringLength(20)]
-        public string Pais { get; set; }
-
-
-
-        @* [Required]
-            [StringLength(100)]
-            public int EmployeeNumber { get; set; }
-
-            [Required]
-            [StringLength(100)]
-            public string Email { get; set; }*@
+                    if (respuestaPersona.IsSuccessStatusCode) {
+                        //Redirigiendonos a la pagina de consultar vacunados
+                        navigationManager.NavigateTo("consultar");
+                    }
+                }
+            }
+        }
 
     }
+
+
 }

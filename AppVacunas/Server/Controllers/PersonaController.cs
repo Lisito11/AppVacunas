@@ -1,6 +1,7 @@
 ﻿using AppVacunas.Server.DTOs;
 using AppVacunas.Server.DTOs.Persona;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,12 +26,12 @@ namespace AppVacunas.Server.Controllers {
                 .Where(x => x.EstatusVacuna == 1)
                 .Include(x => x.Vacuna)
                 .Include(x => x.Direccion)
-                .ThenInclude(x=> x.Provincia)
+                .ThenInclude(x => x.Provincia)
                 .ThenInclude(x => x.Pais)
                 .ToListAsync();
-            return mapper.Map<List<PersonaDTO>>(vacunados);      
+            return mapper.Map<List<PersonaDTO>>(vacunados);
         }
-     
+
         //Metodo Get(id)
         [HttpGet("{id:int}", Name = "obtenerPersona")]
         public async Task<ActionResult<PersonaDTO>> Get(int id) {
@@ -40,11 +41,11 @@ namespace AppVacunas.Server.Controllers {
                  .Include(x => x.Direccion)
                  .ThenInclude(x => x.Provincia)
                  .ThenInclude(x => x.Pais)
-                 .FirstOrDefaultAsync(x=>x.Id == id);
+                 .FirstOrDefaultAsync(x => x.Id == id);
             return mapper.Map<PersonaDTO>(vacunados);
         }
-       
-      
+
+
         //Metodo Post
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] PersonaCreacionDTO personaCreacionDTO) {
@@ -58,11 +59,30 @@ namespace AppVacunas.Server.Controllers {
         }
 
         //Metodo Patch
-        [HttpPatch("{id:int}")]
-        public async Task<ActionResult> Patch(int id) {
-            return await Patch<Persona, PersonaDTO>(id);
-        }
+        [HttpPatch("{cedula}")]
+        public async Task<ActionResult> Patch(string cedula, [FromBody] JsonPatchDocument<Persona> patchDoc) {
+            if (patchDoc == null) {
+                return BadRequest();
+            }
 
+            var personaEdit = await context.Personas.FirstOrDefaultAsync(x => x.Cedula == cedula);
+
+            if (personaEdit == null) {
+                return NotFound();
+            }
+
+            patchDoc.ApplyTo(personaEdit, ModelState);
+
+            var isValid = TryValidateModel(personaEdit);
+
+            if (!isValid) {
+                return BadRequest(ModelState);
+            }
+
+            await context.SaveChangesAsync();
+
+            return NoContent();
+        }
 
 
 

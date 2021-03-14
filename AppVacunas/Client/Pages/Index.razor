@@ -1,24 +1,4 @@
 ﻿@page "/"
-@*iv class="mat-layout-grid mat-layout-grid-align-left">
-        <div class="mat-layout-grid-inner">
-            @foreach (var card in cardsPaginas) {
-                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
-                    <NavLink href="@card.Link" style="text-decoration:none; color:black;">
-                        <MatCard>
-                            <MatCardContent Class="text-center">
-                                <div>
-                                    <MatIcon Icon="@card.Icono" Class="mat-card-img"></MatIcon>
-                                </div>
-                                <div>
-                                    <h6 class="mat-subtitle2">@card.Nombre</h6>
-                                </div>
-                            </MatCardContent>
-                        </MatCard>
-                    </NavLink>
-                </div>
-            }
-        </div>
-    </div>*@
 <MudGrid>
     <MudItem xs="12">
         <MudGrid Spacing="3" Justify="Justify.FlexStart">

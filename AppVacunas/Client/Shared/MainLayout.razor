@@ -6,14 +6,11 @@
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Typo="Typo.h5" Class="ml-3">App Vacunas</MudText>
         <MudAppBarSpacer />
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h5" Class="mt-1">App Vacunas</MudText>
-            <MudDivider Class="my-2" />
-        </MudDrawerHeader>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <img class="img-fluid" src="https://cdn.pixabay.com/photo/2021/01/02/18/39/syringe-5882593_960_720.jpg" />
         <MudNavMenu Class="mud-width-full">
             <MudDivider Class="my-2" />
@@ -31,62 +28,6 @@
         @Body
     </MudMainContent>
 </MudLayout>
-
-@code {
-  
-    }
-
-    @*  <MatAppBarContainer Style="width: 100vw; height: 100vh; ">
-            <MatAppBar Fixed="true" Style="z-index: 100;">
-                <MatAppBarRow>
-                    <MatAppBarSection>
-                        <MatIconButton Icon="menu" OnClick="@((e) => ButtonClicked())"></MatIconButton>
-                        <MatAppBarTitle>App Vacunas</MatAppBarTitle>
-                    </MatAppBarSection>
-                    <MatAppBarSection Align="@MatAppBarSectionAlign.End">
-                        <MatIconButton Icon="home"></MatIconButton>
-                    </MatAppBarSection>
-
-                </MatAppBarRow>
-            </MatAppBar>
-
-            <MatAppBarContent>
-                <MatDrawer Style="position: fixed;" @bind-Opened="@Opened">
-                    <img class="img-fluid" src="https://cdn.pixabay.com/photo/2021/01/02/18/39/syringe-5882593_960_720.jpg" />
-                    <MatDivider />
-                    <MatNavMenu>
-                        <MatNavItem Href="/"><MatIcon Icon="home"></MatIcon>&nbsp; Inicio </MatNavItem>
-                        <MatNavItem Href="registrar"><MatIcon Icon="medical_services"></MatIcon>&nbsp; Registrar</MatNavItem>
-                        <MatNavItem Href="consultar"><MatIcon Icon="local_hospital"></MatIcon>&nbsp; Consultar</MatNavItem>
-                        <MatNavItem Href="provinciasvacunadas"><MatIcon Icon="location_on"></MatIcon>&nbsp; Provincias </MatNavItem>
-                        <MatNavItem Href="marcavacunas"><MatIcon Icon="health_and_safety"></MatIcon>&nbsp; Marca Vacunas </MatNavItem>
-                        <MatNavItem Href="signozodiacal"><MatIcon Icon="bolt"></MatIcon>&nbsp; Signos Zodiacal </MatNavItem>
-                        <MatNavItem Href="anularvacunado"><MatIcon Icon="cancel"></MatIcon>&nbsp; Anular Vacunado</MatNavItem>
-                        <MatNavItem Href="configuracion"><MatIcon Icon="settings_applications"></MatIcon>&nbsp; Configuración </MatNavItem>
-                    </MatNavMenu>
-                </MatDrawer>
-                <MatDrawerContent>
-                    @Body
-                </MatDrawerContent>
-            </MatAppBarContent>
-        </MatAppBarContainer>
-        <a href="registrar">
-            <MatFAB Class="app-fab--absolute" Icon="medical_services"></MatFAB>
-        </a>*@
-
-
-    <style>
-        .app-fab--absolute {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-        }
-
-        .mat-card-img {
-            font-size: 70px;
-            margin: auto;
-        }
-    </style>
 
 
     @code{
