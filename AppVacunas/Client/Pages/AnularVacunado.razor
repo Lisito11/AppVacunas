@@ -1,7 +1,44 @@
 ﻿@page "/anularvacunado"
 
+
 <h3>AnularVacunado</h3>
 
-@code {
 
+@using System.ComponentModel.DataAnnotations
+
+<EditForm Model="person" OnInvalidSubmit="ValidFormSubmitted">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+
+    <label>
+        Cedula:<br />
+
+        <InputText id="IDCedula" @bind-Value="person.Cedula"></InputText>
+    </label>
+    <br />
+    <br />
+
+   
+
+
+
+    <input type="submit" value="Eliminar" />
+</EditForm>
+
+@code{
+    Person person = new Person();
+
+    private void ValidFormSubmitted()
+    {
+
+    }
+
+    class Person
+    {
+        [Required]
+        [StringLength(11)]
+        public string Cedula { get; set; }
+
+      
+    }
 }
