@@ -1,10 +1,42 @@
 ﻿@inherits LayoutComponentBase
-    <MudThemeProvider />
-    <MudDialogProvider />
-    <MudSnackbarProvider />
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-    
-        <MatAppBarContainer Style="width: 100vw; height: 100vh; ">
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudAppBarSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h5" Class="mt-1">App Vacunas</MudText>
+            <MudDivider Class="my-2" />
+        </MudDrawerHeader>
+        <img class="img-fluid" src="https://cdn.pixabay.com/photo/2021/01/02/18/39/syringe-5882593_960_720.jpg" />
+        <MudNavMenu Class="mud-width-full">
+            <MudDivider Class="my-2" />
+            <MudNavLink Href="/" Icon="@Icons.Filled.Home">Inicio</MudNavLink>
+            <MudNavLink Href="registrar" Icon="@Icons.Filled.MedicalServices">Registrar</MudNavLink>
+            <MudNavLink Href="consultar" Icon="@Icons.Filled.LocalHospital">Consultar</MudNavLink>
+            <MudNavLink Href="provinciasvacunadas" Icon="@Icons.Filled.LocationCity">Provincias</MudNavLink>
+            <MudNavLink Href="marcavacunas" Icon="@Icons.Filled.Sanitizer">Marca Vacunas</MudNavLink>
+            <MudNavLink Href="signozodiacal" Icon="@Icons.Filled.Bolt">Signos Zodiacal</MudNavLink>
+            <MudNavLink Href="anularvacunado" Icon="@Icons.Filled.Cancel">Anular Vacunado</MudNavLink>
+            <MudNavLink Href="configuracion" Icon="@Icons.Filled.SettingsApplications">Configuración</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+  
+    }
+
+    @*  <MatAppBarContainer Style="width: 100vw; height: 100vh; ">
             <MatAppBar Fixed="true" Style="z-index: 100;">
                 <MatAppBarRow>
                     <MatAppBarSection>
@@ -40,8 +72,8 @@
         </MatAppBarContainer>
         <a href="registrar">
             <MatFAB Class="app-fab--absolute" Icon="medical_services"></MatFAB>
-        </a>
-   
+        </a>*@
+
 
     <style>
         .app-fab--absolute {
@@ -58,21 +90,23 @@
 
 
     @code{
+        bool _drawerOpen = true;
+
+        void DrawerToggle() {
+            _drawerOpen = !_drawerOpen;
+        }
         bool Opened = true;
 
-        void ButtonClicked()
-        {
+        void ButtonClicked() {
             Opened = !Opened;
         }
 
-        MatTheme theme = new MatTheme()
-        {
+        MatTheme theme = new MatTheme() {
             Primary = "#009be5",
             Secondary = "#9c27b0"
         };
 
-        MatTheme Blacktheme = new MatTheme()
-        {
+        MatTheme Blacktheme = new MatTheme() {
             Primary = "green",
             Secondary = "orange"
         };
@@ -80,15 +114,11 @@
 
         bool toggle = false;
         string icono = "notifications_none";
-        void IsToggle()
-        {
-            if (!toggle)
-            {
+        void IsToggle() {
+            if (!toggle) {
                 toggle = true;
                 icono = "notifications";
-            }
-            else
-            {
+            } else {
                 toggle = false;
                 icono = "notifications_none";
             }
@@ -97,22 +127,3 @@
 
 
     }
-
-
-
-
-    <div class="page">
-        <div class="sidebar">
-            <NavMenu />
-        </div>
-
-        <div class="main">
-            <div class="top-row px-4">
-                <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
-            </div>
-
-            <div class="content px-4">
-                @Body
-            </div>
-        </div>
-    </div>

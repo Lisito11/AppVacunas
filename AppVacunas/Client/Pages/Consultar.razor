@@ -1,63 +1,60 @@
 ﻿@page "/consultar"
+@using System.Globalization;
 
-<h3>Consultar</h3>
+@if (personas == null) {
+    <p><em>Loading...</em></p>
+} else {
+    <MudTable Items="@personas" Hover="@true" Striped="@true" Filter="new Func<Persona, bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Personas Vacunadas </MudText>
+            <MudToolBarSpacer />
+            <MudTextField @bind-Value="searchString" Placeholder="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Cedula</MudTh>
+            <MudTh>Nombres </MudTh>
+            <MudTh>Apellidos</MudTh>
+            <MudTh>Telefono</MudTh>
+            <MudTh>Fecha de nacimiento</MudTh>
+            <MudTh>Provincia</MudTh>
+            <MudTh>Primera Dosis</MudTh>
+            <MudTh>Segunda Dosis</MudTh>
+            <MudTh>Vacuna </MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Cedula">@context.Cedula</MudTd>
+            <MudTd DataLabel="Nombres">@context.Nombres</MudTd>
+            <MudTd DataLabel="Apellidos">@context.Apellido1 @context.Apellido2</MudTd>
+            <MudTd DataLabel="Telefono">@context.Telefono</MudTd>
+            <MudTd DataLabel="Fecha de nacimiento">@context.FechaNacimiento</MudTd>
+            <MudTd DataLabel="Provincia">@context.Direccion.Provincia.NombreProvincia</MudTd>
+            <MudTd DataLabel="Primera Dosis">@context.FechaDosis1</MudTd>
+            <MudTd DataLabel="Segunda  Dosis">@context.FechaDosis2</MudTd>
+            <MudTd DataLabel="Vacuna">@context.Vacuna.Nombre</MudTd>
 
+        </RowTemplate>
 
-
-
-<MudTable Items="@personas"  Hover="@true"  Striped="@true" Filter="new Func<Persona,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Personas Vacunadas </MudText>
-        <MudToolBarSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh>Cedula</MudTh>
-        <MudTh>Nombres </MudTh>
-        <MudTh>Apellidos</MudTh>
-        <MudTh>Telefono</MudTh>
-        <MudTh>Fecha de nacimiento</MudTh>
-        <MudTh>Provincia</MudTh>
-        <MudTh>Primera Dosis</MudTh>
-        <MudTh>Segunda Dosis</MudTh>
-        <MudTh>Vacuna </MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Cedula">@context.Cedula</MudTd>
-        <MudTd DataLabel="Nombres">@context.Nombres</MudTd>
-        <MudTd DataLabel="Apellidos">@context.Apellido1 @context.Apellido2</MudTd>
-        <MudTd DataLabel="Telefono">@context.Telefono</MudTd>
-        <MudTd DataLabel="Fecha de nacimiento">@context.FechaNacimiento</MudTd>
-        <MudTd DataLabel="Provincia">@context.Direccion.Provincia.NombreProvincia</MudTd>
-        <MudTd DataLabel="Primera Dosis">@context.FechaDosis1</MudTd>
-        <MudTd DataLabel="Segunda  Dosis">@context.FechaDosis2</MudTd>
-        <MudTd DataLabel="Vacuna">@context.Vacuna.Nombre</MudTd>
-        
-    </RowTemplate>
-    <PagerContent>
-        <MudTablePager />
-    </PagerContent>
-</MudTable>
-
+    </MudTable>
+}
 @code {
 
-    private List<Persona> personas;
+
+    private HashSet<Persona> selectedItems = new HashSet<Persona>();
+
+    private List<Persona> personas = new List<Persona>();
 
     private Persona selectedItem = null;
 
     private string searchString = "";
 
-    protected override async Task OnInitializedAsync()
-
-    {
+    protected override async Task OnInitializedAsync() {
         personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
 
     }
 
 
 
-    private bool FilterFunc(Persona persona)
-    {
+    private bool FilterFunc(Persona persona) {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
         if (persona.Nombres.Contains(searchString, StringComparison.OrdinalIgnoreCase))
@@ -66,7 +63,19 @@
             return true;
         if (persona.Apellido2.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{persona.Nombres} {persona.Apellido1} {persona.Apellido2}".Contains(searchString))
+        if (persona.Telefono.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (persona.FechaNacimiento.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (persona.Direccion.Provincia.NombreProvincia.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (persona.FechaDosis1.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (persona.FechaDosis2.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (persona.Vacuna.Nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{persona.Nombres} {persona.Apellido1} {persona.Apellido2} {persona.Telefono} {persona.FechaNacimiento.ToString()} {persona.Direccion.Provincia.NombreProvincia} {persona.FechaDosis1.ToString()} {persona.FechaDosis2.ToString()} {persona.Vacuna.Nombre}".Contains(searchString))
             return true;
         return false;
     }

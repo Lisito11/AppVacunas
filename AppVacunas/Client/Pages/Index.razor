@@ -1,27 +1,48 @@
 ﻿@page "/"
-
-<div class="mat-layout-grid mat-layout-grid-align-left">
-    <div class="mat-layout-grid-inner">
-        @foreach (var card in cardsPaginas) {
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
-                <NavLink href="@card.Link" style="text-decoration:none; color:black;">
-                    <MatCard>
-                        <MatCardContent Class="text-center">
+@*iv class="mat-layout-grid mat-layout-grid-align-left">
+        <div class="mat-layout-grid-inner">
+            @foreach (var card in cardsPaginas) {
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                    <NavLink href="@card.Link" style="text-decoration:none; color:black;">
+                        <MatCard>
+                            <MatCardContent Class="text-center">
+                                <div>
+                                    <MatIcon Icon="@card.Icono" Class="mat-card-img"></MatIcon>
+                                </div>
+                                <div>
+                                    <h6 class="mat-subtitle2">@card.Nombre</h6>
+                                </div>
+                            </MatCardContent>
+                        </MatCard>
+                    </NavLink>
+                </div>
+            }
+        </div>
+    </div>*@
+<MudGrid>
+    <MudItem xs="12">
+        <MudGrid Spacing="3" Justify="Justify.FlexStart">
+            @foreach (var card in cardsPaginas) {
+            <MudItem>
+                <MudLink Href="@card.Link" Underline="Underline.None" Class="text-center" Color="Color.Inherit">
+                    <MudCard Style="height:120px; width:200px;">
+                        <MudCardContent>
                             <div>
-                                <MatIcon Icon="@card.Icono" Class="mat-card-img"></MatIcon>
+                                <MudIcon Icon="@card.Icono" Size="Size.Large"></MudIcon>
                             </div>
                             <div>
                                 <h6 class="mat-subtitle2">@card.Nombre</h6>
                             </div>
-                        </MatCardContent>
-                    </MatCard>
-                </NavLink>
-            </div>
-        }
-    </div>
-</div>
+                        </MudCardContent>
 
+                    </MudCard>
+                </MudLink>
 
+            </MudItem>
+            }
+        </MudGrid>
+    </MudItem>
+</MudGrid>
 @code{
     private class CustomCard {
         public string Link { get; set; }
@@ -30,13 +51,13 @@
     }
 
     List<CustomCard> cardsPaginas = new List<CustomCard>() {
-        new CustomCard { Link = "registrar", Nombre = "Registrar", Icono = "medical_services" },
-        new CustomCard { Link = "consultar", Nombre = "Consultar Vacunados", Icono = "local_hospital" },
-        new CustomCard { Link = "provinciasvacunadas", Nombre = "Provincias Vacunadas", Icono = "location_on" },
-        new CustomCard { Link = "marcavacunas", Nombre = "Vacunados Marca Vacunas", Icono = "health_and_safety" },
-        new CustomCard { Link = "signozodiacal", Nombre = "Vacunados Signo Zodiacal", Icono = "bolt" },
-        new CustomCard { Link = "anularvacunado", Nombre = "Anular Vacunado", Icono = "cancel" },
-        new CustomCard { Link = "configuracion", Nombre = "Configuración", Icono = "settings_applications" }
+        new CustomCard { Link = "registrar", Nombre = "Registrar", Icono = Icons.Filled.MedicalServices },
+        new CustomCard { Link = "consultar", Nombre = "Consultar Vacunados", Icono = Icons.Filled.LocalHospital },
+        new CustomCard { Link = "provinciasvacunadas", Nombre = "Provincias Vacunadas", Icono = Icons.Filled.LocationCity },
+        new CustomCard { Link = "marcavacunas", Nombre = "Vacunados Marca Vacunas", Icono = Icons.Filled.Sanitizer  },
+        new CustomCard { Link = "signozodiacal", Nombre = "Vacunados Signo Zodiacal", Icono = Icons.Filled.Bolt },
+        new CustomCard { Link = "anularvacunado", Nombre = "Anular Vacunado", Icono = Icons.Filled.Cancel },
+        new CustomCard { Link = "configuracion", Nombre = "Configuración", Icono = Icons.Filled.SettingsApplications }
     };
 
 }

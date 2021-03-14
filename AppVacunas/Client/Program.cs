@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using MudBlazor.Services;
 
-
 namespace AppVacunas.Client {
     public class Program {
         public static async Task Main(string[] args) {
@@ -19,9 +18,9 @@ namespace AppVacunas.Client {
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            await builder.Build().RunAsync();
-
             builder.Services.AddMudServices();
+
+            await builder.Build().RunAsync();
 
         }
     }
