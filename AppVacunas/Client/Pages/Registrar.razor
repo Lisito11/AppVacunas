@@ -166,35 +166,42 @@
             navigationManager.NavigateTo("consultar");
 
         } else {
+            Vacuna vacuna = vacunas.Where(x => x.Nombre == VacunaSeleccionada).FirstOrDefault();
 
-            //Creando nueva direccion con la provincia seleccionada
-            Direccion direccion = new Direccion() { ProvinciaId = int.Parse(ProvinciaSeleccionada), PaisId = 1 };
+            if (vacuna.CantidadVacuna <= 0) {
+                Snackbar.Add($"No se puede vacunar, no quedan vacunas {vacuna.Nombre}", Severity.Error);
+                navigationManager.NavigateTo("");
 
-            var respuesta = await Http.PostAsJsonAsync("api/direcciones", direccion);
+            } else {
+                //Creando nueva direccion con la provincia seleccionada
+                Direccion direccion = new Direccion() { ProvinciaId = int.Parse(ProvinciaSeleccionada), PaisId = 1 };
 
-            if (respuesta.IsSuccessStatusCode) {
-                direcciones = await Http.GetFromJsonAsync<List<Direccion>>("api/direcciones");
-                if (direcciones.Count > 0) {
-                    direccionPersona = direcciones.LastOrDefault();
+                var respuesta = await Http.PostAsJsonAsync("api/direcciones", direccion);
 
-                    //Creando persona correctamente
+                if (respuesta.IsSuccessStatusCode) {
+                    direcciones = await Http.GetFromJsonAsync<List<Direccion>>("api/direcciones");
+                    if (direcciones.Count > 0) {
+                        direccionPersona = direcciones.LastOrDefault();
 
-                    persona.Nombres = Nombres;
-                    persona.Apellido1 = Apellido1;
-                    persona.Apellido2 = Apellido2;
-                    persona.Cedula = CedulaSeleccionada;
-                    persona.Telefono = Telefono;
-                    persona.DireccionId = direccionPersona.Id;
-                    persona.FechaDosis1 = fechaPrimeraDosis;
-                    persona.FechaNacimiento = DateTime.Parse(FechaNacimiento);
-                    persona.VacunaId = int.Parse(VacunaSeleccionada);
-                    persona.EstatusVacuna = 1;
+                        //Creando persona correctamente
 
-                    var respuestaPersona = await Http.PostAsJsonAsync("api/personas", persona);
+                        persona.Nombres = Nombres;
+                        persona.Apellido1 = Apellido1;
+                        persona.Apellido2 = Apellido2;
+                        persona.Cedula = CedulaSeleccionada;
+                        persona.Telefono = Telefono;
+                        persona.DireccionId = direccionPersona.Id;
+                        persona.FechaDosis1 = fechaPrimeraDosis;
+                        persona.FechaNacimiento = DateTime.Parse(FechaNacimiento);
+                        persona.VacunaId = int.Parse(VacunaSeleccionada);
+                        persona.EstatusVacuna = 1;
 
-                    if (respuestaPersona.IsSuccessStatusCode) {
-                        //Redirigiendonos a la pagina de consultar vacunados
-                        navigationManager.NavigateTo("consultar");
+                        var respuestaPersona = await Http.PostAsJsonAsync("api/personas", persona);
+
+                        if (respuestaPersona.IsSuccessStatusCode) {
+                            //Redirigiendonos a la pagina de consultar vacunados
+                            navigationManager.NavigateTo("consultar");
+                        }
                     }
                 }
             }
