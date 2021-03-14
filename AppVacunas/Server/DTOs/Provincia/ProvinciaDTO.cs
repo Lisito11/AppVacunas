@@ -10,6 +10,6 @@ namespace AppVacunas.Server.DTOs {
     public class ProvinciaDTO : ProvinciaCreacionDTO {
         public int Id { get; set; }
         public virtual PaisDTO Pais { get; set; }
-        public virtual ICollection<PersonaDireccionDTO> Direcciones { get; set; }
+        /*public virtual ICollection<PersonaDireccionDTO> Direcciones { get; set; }*/
     }
 }
