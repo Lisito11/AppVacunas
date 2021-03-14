@@ -26,6 +26,7 @@ namespace AppVacunas.Server {
             services.AddDbContext<dfd2guu5v5usvlContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Dbconnection")));
 
             services.AddControllers().AddNewtonsoftJson(options =>options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
