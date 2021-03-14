@@ -2,21 +2,29 @@
 
 <h1>Personas</h1>
 
-@if (personas == null) {
+@if (personas == null)
+{
     <p><em>Loading...</em></p>
-} else {
+}
+else
+{
     <table class="table">
         <thead>
             <tr>
                 <th>Nombres</th>
                 <th>Apellidos</th>
+                <th>Provincia</th>
+                <th>Vacuna</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var persona in personas) {
+            @foreach (var persona in personas)
+            {
                 <tr>
                     <td>@persona.Nombres</td>
-                    <td>@persona.Apellido1 @persona.Apellido2</td>             
+                    <td>@persona.Apellido1 @persona.Apellido2</td>
+                    <td> @persona.Direccion.Provincia.NombreProvincia</td>
+                    <td>@persona.Vacuna.Nombre  </td>
                 </tr>
             }
         </tbody>
@@ -27,7 +35,8 @@
 @code {
     private List<Persona> personas;
 
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync()
+    {
         personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
     }
 }

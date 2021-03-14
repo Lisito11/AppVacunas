@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using MudBlazor.Services;
+
 
 namespace AppVacunas.Client {
     public class Program {
@@ -18,6 +20,8 @@ namespace AppVacunas.Client {
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             await builder.Build().RunAsync();
+
+            builder.Services.AddMudServices();
 
         }
     }
