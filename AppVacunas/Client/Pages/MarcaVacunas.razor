@@ -3,5 +3,47 @@
 <h3>MarcaVacunas</h3>
 
 @code {
+    @using System.ComponentModel.DataAnnotations
 
+    <EditForm Model="person" OnInvalidSubmit="ValidFormSubmitted">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+      
+
+        <label>
+            Vacuna :<br />
+            <InputText id="IDVacuna" @bind-Value="person.VacunaID"></InputText>
+        </label>
+        <br />
+        <br />
+
+
+
+
+        <input type="submit" value="Submit" />
+    </EditForm>
+
+    @code{
+            Person person = new Person();
+
+            private void ValidFormSubmitted()
+            {
+
+            }
+
+            class Person
+            {
+               
+
+                [Required]
+                [StringLength(20)]
+                public string VacunaID { get; set; }
+
+                
+
+
+
+            }
+    }
 }
