@@ -3,26 +3,21 @@
 <h3>MarcaVacunas</h3>
 
 
-@if (personas == null)
-{
+@if (personas == null) {
     <p><em>Loading...</em></p>
-}
-else
-{
+} else {
     <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="@TraerVacunados">Buscar</MudButton>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Nombre de vacunas</th>
-                <th>Cantidad de vacuandos</th>
+                <th>Cantidad de vacunados</th>
             </tr>
         </thead>
         <tbody>
-            @if (traer)
-            {
-                @foreach (var vacuna in vacunados)
-                {
+            @if (traer) {
+                @foreach (var vacuna in vacunados) {
                     <tr>
                         <td>@vacuna.NombreVacuna</td>
                         <td>@vacuna.CantidadPersonas</td>
@@ -33,31 +28,41 @@ else
 
         </tbody>
     </table>
-
-
+    @if (traer) {
+        <MudChart ChartType="ChartType.Pie" InputData="@data" InputLabels="@labels" Width="300px" Height="300px" />
+    }
 }
 @code {
-
+    double[] data = {};
+    string[] labels = {};
     bool traer = false;
 
-    void TraerVacunados()
-    {
+    void TraerVacunados() {
         traer = true;
         vacunados = FiltrarVacunados();
-
+        int dataSize = vacunas.Count;
+        var new_data = new double[dataSize];
+        var new_labels = new string[dataSize];
+        int contador = 0;
+        foreach (var vacunado in vacunados) {
+            new_labels[contador] = vacunado.NombreVacuna;
+            new_data[contador] = vacunado.CantidadPersonas;
+            contador++;
+            data = new_data;
+            labels = new_labels;
+        }
+        StateHasChanged();
     }
-
-    //private List<double> data = new List<double>();
-    //private List<string> labels = new List<string>();
-
 
     private List<Persona> personas = new List<Persona>();
+    private List<Vacuna> vacunas = new List<Vacuna>();
 
 
-    protected override async Task OnInitializedAsync()
-    {
+    protected override async Task OnInitializedAsync() {
         personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
+        vacunas = await Http.GetFromJsonAsync<List<Vacuna>>("api/vacunas");
     }
+
 
     dynamic vacunados;
 
