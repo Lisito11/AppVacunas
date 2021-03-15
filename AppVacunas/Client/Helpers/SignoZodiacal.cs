@@ -11,9 +11,9 @@ namespace AppVacunas.Client.Helpers {
             string mes, fechaNacimiento;
             int dia;
 
-            fechaNacimiento = fecha.Substring(0, 11);
-            mes = fechaNacimiento.Substring(5, 2);
-            dia = int.Parse(fechaNacimiento.Substring(8, 2));
+            fechaNacimiento = fecha.Substring(0, 9);
+            mes = fechaNacimiento.Substring(0, 3);
+            dia = int.Parse(fechaNacimiento.Substring(3, 5));
 
             // Acuario
             // Enero 20 hasta Febrero 18

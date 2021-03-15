@@ -13,4 +13,5 @@ namespace AppVacunas.Client.Helpers {
         [DataMember(Name = "value")]
         public object Value { get; set; }
     }
+
 }
