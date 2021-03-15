@@ -3,73 +3,73 @@
 
 <h3>AnularVacunado</h3>
 
-@using System.ComponentModel.DataAnnotations
 
-<div style="max-width: 400px;">
-    <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-        <DataAnnotationsValidator />
+@inject NavigationManager navigationManager
+
+<MudGrid Justify="Justify.Center">
+
+
+
+    <MudItem xs="6">
         <MudCard>
             <MudCardContent>
-                <MudTextField Label="Cedula " HelperText="Max. 11 characters"
-                              @bind-Value="model.Cedula" For="@(() => model.Cedula)" />
+                <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                    <MudTextField T="string" Label="Cédula" Required="true" RequiredError="@MensajeError("Cédula")" @bind-Value="@CedulaSeleccionada" />
+
+
+                </MudForm>
             </MudCardContent>
-           
+            <MudCardActions>
+                <MudButton OnClick="@EliminarVacunado" Variant="Variant.Filled" Color="Color.Error" Class="ml-auto">Eliminar  Vacunado</MudButton>
+            </MudCardActions>
         </MudCard>
-        <MudText Typo="Typo.body2" Align="Align.Center" Class="my-4">
-            Fill out the form correctly to see the success message.
-        </MudText>
+    </MudItem>
 
-        <MudExpansionPanels>
-            <MudExpansionPanel Text="Show Validation Summary">
-                @if (success)
-                {
-                    <MudText Color="Color.Success">Success</MudText>
-                }
-                else
-                {
-                    <MudText Color="@Color.Error">
-                        <ValidationSummary />
-                    </MudText>
-                }
-            </MudExpansionPanel>
-        </MudExpansionPanels>
-    </EditForm>
-    <MudText Align=" Align .Center">
-       
-        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error">Delete</MudButton>
+</MudGrid>
 
-    </MudText>
-
-</div>
 
 
 @code {
 
-    RegisterAccountForm model = new RegisterAccountForm();
+    List<Persona> personas = new List<Persona>();
+
     bool success;
+    bool visible = false;
+    string[] errors = { };
+    MudForm form;
+    string MensajeError(string field) => $"{field} debe introducirse!";
 
-    public class RegisterAccountForm
+    public string CedulaSeleccionada { get; set; }
+
+    private async Task EliminarVacunado()
     {
-        [Required]
-        [StringLength(11, ErrorMessage = "Cedula length can't be more than 11.")]
-        public string  Cedula { get; set; }
+        string json = "[{\"op\": \"replace\",\"path\": \"/EstatusVacuna\",\"value\":" + $"\"0\"" + "}]";
+
+        HttpContent content = new StringContent(json, Encoding.UTF8, "application/json-patch+json");
+        var response = await Http.PatchAsync($"api/personas/{CedulaSeleccionada}", content);
+
+        Console.WriteLine(response.Content);
+
+        //var respuestaPersona = await Http.PutAsJsonAsync("api/personas", personaEdit);
+
+        if (response.IsSuccessStatusCode)
+        {
+            //Redirigiendonos a la pagina de consultar vacunados
+            navigationManager.NavigateTo("consultar");
+        }
+        
+
+    }
+    
 
 
-       
-       @* [Required]
-        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
-        public string Password { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
 
-        [Required]
-        [Compare(nameof(Password))]
-        public string Password2 { get; set; }
-           *@
     }
 
-    private void OnValidSubmit(EditContext context)
-    {
-        success = true;
-        StateHasChanged();
-    }
 
 }
+
+
