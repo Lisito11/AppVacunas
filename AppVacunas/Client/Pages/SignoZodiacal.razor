@@ -1,7 +1,73 @@
 ﻿@page "/signozodiacal"
 
-<h3>SignoZodiacal</h3>
+<h3 class="m-3">SignoZodiacal</h3>
 
+@if (personas == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table m-2" >
+        <thead>
+            <tr>
+                <th>Acuario</th>
+                <th>Piscis</th>
+                <th>Aries</th>
+                <th>Tauro</th>
+                <th>Geminis</th>
+                <th>Cancer</th>
+                <th>Leo</th>
+                <th>Virgo</th>
+                <th>LIbra</th>
+                <th>Escorpio</th>
+                <th>Sagitario</th>
+                <th>Capricornio</th>
+            </tr>
+        </thead>
+        <tbody>
+            @*
+                <tr>
+                    @foreach (var cantidad in CantidadSignos)
+                        {
+                            <td>@</td>
+                        }
+                </tr>
+            *@
+
+        </tbody>
+    </table>
+}
 @code {
+
+    public string ProvinciaSeleccionada { get; set; }
+
+    private List<Persona> PersonasProvincias = new List<Persona>();
+
+    private List<Provincia> provincias = new List<Provincia>();
+
+    private HashSet<Persona> selectedItems = new HashSet<Persona>();
+
+    private List<Persona> personas = new List<Persona>();
+
+    private Persona selectedItem = null;
+
+    private string searchString = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
+        provincias = await Http.GetFromJsonAsync<List<Provincia>>("api/provincias");
+
+    }
+
+    void FiltrarProvincia()
+    {
+        if (!String.IsNullOrEmpty(ProvinciaSeleccionada))
+        {
+            PersonasProvincias = personas.Where(persona => persona.Direccion.Provincia.Id == int.Parse(ProvinciaSeleccionada)).ToList();
+        }
+
+    }
 
 }

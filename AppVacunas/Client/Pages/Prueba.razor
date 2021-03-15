@@ -33,10 +33,14 @@ else
 
 
 @code {
+
     private List<Persona> personas;
 
     protected override async Task OnInitializedAsync()
     {
         personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
+
+        SignoZodiacal signo = new SignoZodiacal();
+
     }
 }
