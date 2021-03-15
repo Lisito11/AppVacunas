@@ -67,14 +67,14 @@
 
 @code{
 
-    bool success;
-    bool visible = false;
-    string[] errors = { };
-    MudForm form;
-    string MensajeError(string field) => $"{field} debe introducirse!";
+        bool success;
+        bool visible = false;
+        string[] errors = { };
+        MudForm form;
+        string MensajeError(string field) => $"{field} debe introducirse!";
 
-    DateTime? fechaPrimeraDosis = DateTime.Today;
-    DateTime? fechaSegundaDosis = DateTime.Today;
+        DateTime? fechaPrimeraDosis = DateTime.Today;
+        DateTime? fechaSegundaDosis = DateTime.Today;
 
     public string Nombres { get; set; }
     public string Apellido1 { get; set; }
@@ -101,6 +101,8 @@
     private List<Direccion> direcciones = new List<Direccion>();
 
     private Direccion direccionPersona = new Direccion();
+
+    Vacuna vacuna = new Vacuna();
 
 
     private async Task BuscarDatosCedula() {
@@ -157,16 +159,20 @@
         PersonaValidada = personas.Where(x => x.Cedula == CedulaSeleccionada).FirstOrDefault();
 
         if (PersonaValidada != null) {
-            if (PersonaValidada.FechaDosis2 == null) {
+            if (PersonaValidada.FechaDosis2 == null)
+            {
                 visible = true;
                 Snackbar.Add($"{Nombres} {Apellido1} {Apellido2} Ya se cuentra registrado!", Severity.Info);
                 PrimeraDosisValidada = PersonaValidada.FechaDosis1.ToString().Substring(0, 9);
             }
-            Snackbar.Add($"{Nombres} {Apellido1} Ya se encuentra registrado y con segunda dosis!", Severity.Info);
-            navigationManager.NavigateTo("consultar");
+            else
+            {
+                Snackbar.Add($"{Nombres} {Apellido1} Ya se encuentra registrado y con segunda dosis!", Severity.Info);
+                navigationManager.NavigateTo("consultar");
+            }
 
         } else {
-            Vacuna vacuna = vacunas.Where(x => x.Nombre == VacunaSeleccionada).FirstOrDefault();
+            vacuna = vacunas.Where(x => x.Id== int.Parse(VacunaSeleccionada)).FirstOrDefault();
 
             if (vacuna.CantidadVacuna <= 0) {
                 Snackbar.Add($"No se puede vacunar, no quedan vacunas {vacuna.Nombre}", Severity.Error);
