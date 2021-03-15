@@ -2,6 +2,160 @@
 
 <h3>Configuracion</h3>
 
-@code {
+@inject ISnackbar Snackbar
 
+@inject NavigationManager navigationManager
+
+<MudGrid Justify="Justify.FlexStart">
+
+
+    <MudItem xs="6">
+        <MudCard>
+            <MudText Typo="Typo.h6"> Registrar Vacuna </MudText>
+
+
+            <MudCardContent>
+
+                <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+
+                    <MudTextField T="string" Label="Nombre de Vacuna   " Required="true" RequiredError="@MensajeError("NombreVacuna")" @bind-Value="@NombreVacuna" />
+
+                    <MudSelect T="string" Label="Paises" @bind-Value="PaisSeleccionado">
+                        @foreach (var pais in paises)
+                        {<MudSelectItem Value="@pais.Id.ToString()"> @pais.NombrePais </MudSelectItem>}
+                    </MudSelect>
+
+                    <MudTextField T="string" Label="Nombres de Organizacion" Required="true" RequiredError="@MensajeError("NombresOrganizacion")" @bind-Value="@NombresOrganizacion" />
+                    <MudTextField T="string" InputType="InputType.Number" Label="Cantidad de Dias " Required="true" RequiredError="@MensajeError("Cantidad de Dias")" @bind-Value="@CantidadDias" HelperText="Cantidad que hay que esperar para la proxima dosis de vacuna" />
+                    <MudTextField T="string" InputType="InputType.Number" Label="Cantidad de Vacuna " Required="true" RequiredError="@MensajeError("Cantidad de Vacuna ")" @bind-Value="@CantidadVacuna" HelperText="Cantidad de vacuna que hay disponible" />
+
+                </MudForm>
+            </MudCardContent>
+
+            <MudCardActions>
+
+                <MudButton OnClick="@RegistrarVacuna" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Registrar Vacuna</MudButton>
+
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="6">
+
+        <MudCard>
+            <MudText Typo="Typo.h6"> Registrar Provincia </MudText>
+            <MudCardContent>
+                <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+
+                    <MudTextField T="string" Label="Nombre de Provincia" Required="true" RequiredError="@MensajeError("NombreProvincia")" @bind-Value="@NombreProvincia"/>
+
+                    <MudSelect T="string" Label="Paises" @bind-Value="AgregarPais ">
+                        @foreach (var pais in paises)
+                        {<MudSelectItem Value="@pais.Id.ToString()"> @pais.NombrePais </MudSelectItem>}
+                    </MudSelect>
+
+                </MudForm>
+            </MudCardContent>
+
+            <MudCardActions>
+
+                <MudButton OnClick="@RegistrarProvincia" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Registrar Provincia</MudButton>
+
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+
+</MudGrid>
+
+
+
+@code{
+
+    private Vacuna vacuna = new Vacuna();
+    private Provincia provincia = new Provincia();
+
+
+
+
+    bool success;
+    bool visible = false;
+    string[] errors = { };
+    MudForm form;
+    string MensajeError(string field) => $"{field} debe introducirse!";
+
+    public string NombreVacuna { get; set; }
+    public string NombreProvincia { get; set; }
+
+    public string PaisSeleccionado { get; set; }
+    public string AgregarPais { get; set; }
+
+    public string NombresOrganizacion { get; set; }
+    public string CantidadDias { get; set; }
+    public string CantidadVacuna { get; set; }
+
+
+    private List<Pais> paises = new List<Pais>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        paises = await Http.GetFromJsonAsync<List<Pais>>("api/paises");
+
+    }
+
+    private async Task RegistrarVacuna()
+    {
+
+        vacuna.Nombre = NombreVacuna;
+        vacuna.PaisId = int.Parse(PaisSeleccionado);
+        vacuna.NombreOrganizacion = NombresOrganizacion;
+        vacuna.CantidadDias = int.Parse(CantidadDias);
+        vacuna.CantidadVacuna = int.Parse(CantidadVacuna);
+
+
+        var respuestaPersona = await Http.PostAsJsonAsync("api/vacunas", vacuna);
+
+        if (respuestaPersona.IsSuccessStatusCode)
+        {
+            NombreVacuna = "";
+            PaisSeleccionado = "";
+            NombresOrganizacion = "";
+            CantidadDias = "";
+            CantidadVacuna = "";
+
+
+            Console.WriteLine("Se Registro Vacuna");
+
+            Snackbar.Add("Se agrego la vacuna correctamente!", Severity.Success);
+        }
+
+    }
+
+    //Registrar - Provincia
+
+    private async Task RegistrarProvincia()
+    {
+
+        provincia.NombreProvincia = NombreProvincia;
+        provincia.PaisId = int.Parse(AgregarPais);
+
+
+
+        var respuestaPersona = await Http.PostAsJsonAsync("api/provincias", provincia);
+
+        if (respuestaPersona.IsSuccessStatusCode)
+        {
+            NombreProvincia = "";
+            AgregarPais = "";
+
+
+
+            Console.WriteLine("Se Registro Provincia");
+
+            Snackbar.Add("Se agrego un nueva provincia!", Severity.Success);
+        }
+
+    }
+}
 }
