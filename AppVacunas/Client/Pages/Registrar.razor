@@ -2,8 +2,14 @@
 @inject ISnackbar Snackbar
 @using Helpers
 @inject IJSRuntime jsRuntime
-<h1>Registrar Vacunado</h1>
 
+<h1>Registrar Vacunado</h1>
+<style>
+    .map {
+        width: 250px;
+        height: 250px;
+    }
+</style>
 @inject NavigationManager navigationManager
 <MudGrid Justify="Justify.Center">
     @if (!visible) {
@@ -11,32 +17,59 @@
             <MudCard>
                 <MudCardContent>
                     <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-                        <MudTextField T="string" Label="Cédula" Required="true" RequiredError="@MensajeError("Cédula")" @bind-Value="@CedulaSeleccionada" TextChanged="BuscarDatosCedula" />
-                        <MudTextField T="string" Label="Nombres" Required="true" RequiredError="@MensajeError("Nombres")" @bind-Value="@datosCedula.Nombres" />
-                        <MudTextField T="string" Label="Primer Apellido" Required="true" RequiredError="@MensajeError("Primer Apellido")" @bind-Value="Apellido1" />
-                        <MudTextField T="string" Label="Segundo Apellido" Required="true" RequiredError="@MensajeError("Segundo Apellido")" @bind-Value="Apellido2" />
-                        <MudTextField T="string" Label="Teléfono" RequiredError="@MensajeError("Teléfono")" @bind-Value="Telefono" />
+                        <MudExpansionPanels>
+                            <MudExpansionPanel Text="Datos Personales">
+                                <MudTextField T="string" Label="Cédula" Required="true" RequiredError="@MensajeError("Cédula")" @bind-Value="@CedulaSeleccionada" TextChanged="BuscarDatosCedula" />
+                                <MudTextField T="string" Label="Nombres" Required="true" RequiredError="@MensajeError("Nombres")" @bind-Value="@datosCedula.Nombres" />
+                                <MudTextField T="string" Label="Primer Apellido" Required="true" RequiredError="@MensajeError("Primer Apellido")" @bind-Value="Apellido1" />
+                                <MudTextField T="string" Label="Segundo Apellido" Required="true" RequiredError="@MensajeError("Segundo Apellido")" @bind-Value="Apellido2" />
+                                <MudTextField T="string" Label="Teléfono" RequiredError="@MensajeError("Teléfono")" @bind-Value="Telefono" />
+                                <MudDatePicker Label="Fecha de Nacimiento" @bind-Text="FechaNacimiento" Editable="true" />
+                            </MudExpansionPanel>
+                            <MudExpansionPanel Text="Dirección">
+                                <MudGrid>
+                                    <MudItem xs="12">
+                                        <MudGrid Spacing="1">
+                                            <MudItem>
+                                                <MudTextField @bind-Value="CalleDireccion" Label="Calle" Variant="Variant.Text"></MudTextField>
+                                            </MudItem>
+                                            <MudItem sm="4">
+                                                <MudSelect T="string" Label="Provincia" @bind-Value="ProvinciaSeleccionada">
+                                                    @foreach (var provincia in provincias) {<MudSelectItem Value="@provincia.Id.ToString()"> @provincia.NombreProvincia </MudSelectItem>}
+                                                </MudSelect>
+                                            </MudItem>
+                                            <MudItem sm="3">
+                                                <MudSelect T="string" Label="Pais" @bind-Value="PaisSeleccionado">
+                                                    @foreach (var pais in paises) {<MudSelectItem Value="@pais.Id.ToString()"> @pais.NombrePais </MudSelectItem>}
+                                                </MudSelect>
+                                            </MudItem>
+                                        </MudGrid>
+                                        <br />
+                                        <MudItem>
+                                            <MudButton OnClick="@BuscarDireccion" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Buscar</MudButton>
+                                        </MudItem>
+                                        @if (mapVisible) {
 
-                        <MudDatePicker Label="Fecha de Nacimiento" @bind-Text="FechaNacimiento" Editable="true" />
+                                        }
 
-                        <MudSelect T="string" Label="Provincias" @bind-Value="ProvinciaSeleccionada">
-                            @foreach (var provincia in provincias) {<MudSelectItem Value="@provincia.Id.ToString()"> @provincia.NombreProvincia </MudSelectItem>}
-                        </MudSelect>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudExpansionPanel>
 
-
-                        <MudSelect T="string" Label="Vacunas" @bind-Value="VacunaSeleccionada">
-                            @foreach (var vacuna in vacunas) {<MudSelectItem Value="@vacuna.Id.ToString()"> @vacuna.Nombre </MudSelectItem>}
-                        </MudSelect>
-
-
-                        <MudDatePicker Label="Fecha Primera Dosis" @bind-Date="fechaPrimeraDosis" />
-                        
+                            <MudExpansionPanel Text="Datos Vacunación">
+                                <MudSelect T="string" Label="Vacunas" @bind-Value="VacunaSeleccionada">
+                                    @foreach (var vacuna in vacunas) {<MudSelectItem Value="@vacuna.Id.ToString()"> @vacuna.Nombre </MudSelectItem>}
+                                </MudSelect>
+                                <MudDatePicker Label="Fecha Primera Dosis" @bind-Date="fechaPrimeraDosis" />
+                            </MudExpansionPanel>
+                        </MudExpansionPanels>
                     </MudForm>
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton OnClick="@RegistrarVacunado" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Registrar Vacunado</MudButton>
                 </MudCardActions>
             </MudCard>
+
         </MudItem>
     }
     @if (visible) {
@@ -67,67 +100,101 @@
 
 
 @code{
-    protected override async Task OnInitializedAsync() {
-        personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
-        provincias = await Http.GetFromJsonAsync<List<Provincia>>("api/provincias");
-        vacunas = await Http.GetFromJsonAsync<List<Vacuna>>("api/vacunas");
-    }
+        protected override async Task OnInitializedAsync() {
+            personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
+            provincias = await Http.GetFromJsonAsync<List<Provincia>>("api/provincias");
+            vacunas = await Http.GetFromJsonAsync<List<Vacuna>>("api/vacunas");
+            paises = await Http.GetFromJsonAsync<List<Pais>>("api/paises");
 
-    //Mapa opciones
+            // Mapa
 
-
-    bool success;
-    bool visible = false;
-    string[] errors = { };
-    MudForm form;
-    string MensajeError(string field) => $"{field} debe introducirse!";
-
-    DateTime? fechaPrimeraDosis = DateTime.Today;
-    DateTime? fechaSegundaDosis = DateTime.Today;
-
-    public string Nombres { get; set; }
-    public string Apellido1 { get; set; }
-    public string Apellido2 { get; set; }
-    public string Telefono { get; set; }
-    public string FechaNacimiento { get; set; }
-    public string ProvinciaSeleccionada { get; set; }
-    public string VacunaSeleccionada { get; set; }
-    public string CedulaSeleccionada { get; set; }
-    public string PrimeraDosisValidada { get; set; }
-
-    private List<Provincia> provincias = new List<Provincia>();
-
-    private List<Vacuna> vacunas = new List<Vacuna>();
-
-    private List<Persona> personas = new List<Persona>();
-
-    Persona persona = new Persona();
-
-    private CedulaApi datosCedula = new CedulaApi();
-
-    Persona PersonaValidada = new Persona();
-
-    private List<Direccion> direcciones = new List<Direccion>();
-
-    private Direccion direccionPersona = new Direccion();
-
-    Vacuna vacuna = new Vacuna();
-
-
-    private async Task BuscarDatosCedula() {
-        if (!String.IsNullOrEmpty(CedulaSeleccionada) && CedulaSeleccionada.Length == 11) {
-            datosCedula = await Http.GetFromJsonAsync<CedulaApi>($"https://api.adamix.net/apec/cedula/{CedulaSeleccionada}");
-            Nombres = datosCedula.Nombres;
-            Apellido1 = datosCedula.Apellido1;
-            Apellido2 = datosCedula.Apellido2;
-            FechaNacimiento = datosCedula.FechaNacimiento.ToString().Substring(0, 11);
 
         }
-        //Console.WriteLine(CedulaSeleccionada);
+
+     
+
+        bool success;
+        bool visible = false;
+        bool mapVisible = false;
+        string[] errors = { };
+        MudForm form;
+        string MensajeError(string field) => $"{field} debe introducirse!";
+
+        DateTime? fechaPrimeraDosis = DateTime.Today;
+        DateTime? fechaSegundaDosis = DateTime.Today;
+
+        public string Nombres { get; set; }
+        public string Apellido1 { get; set; }
+        public string Apellido2 { get; set; }
+        public string Telefono { get; set; }
+        public string FechaNacimiento { get; set; }
+        public string ProvinciaSeleccionada { get; set; }
+        public string VacunaSeleccionada { get; set; }
+        public string CedulaSeleccionada { get; set; }
+        public string PaisSeleccionado { get; set; }
+        public string CalleDireccion { get; set; }
+        public string LatitudDireccion { get; set; }
+        public string LongitudDireccion { get; set; }
+        public string PrimeraDosisValidada { get; set; }
+
+        private List<Provincia> provincias = new List<Provincia>();
+
+        private List<Vacuna> vacunas = new List<Vacuna>();
+
+        private List<Persona> personas = new List<Persona>();
+
+        private List<Pais> paises = new List<Pais>();
+
+        Persona persona = new Persona();
+
+        private CedulaApi datosCedula = new CedulaApi();
+
+        private Geocoding GeocodingDireccion = new Geocoding();
+
+        Persona PersonaValidada = new Persona();
+
+        private List<Direccion> direcciones = new List<Direccion>();
+
+        private Direccion direccionPersona = new Direccion();
+
+        Vacuna vacuna = new Vacuna();
+
+        
+
+        private async Task BuscarDatosCedula() {
+            if (!String.IsNullOrEmpty(CedulaSeleccionada) && CedulaSeleccionada.Length == 11) {
+                datosCedula = await Http.GetFromJsonAsync<CedulaApi>($"https://api.adamix.net/apec/cedula/{CedulaSeleccionada}");
+                Nombres = datosCedula.Nombres;
+                Apellido1 = datosCedula.Apellido1;
+                Apellido2 = datosCedula.Apellido2;
+                FechaNacimiento = datosCedula.FechaNacimiento.ToString().Substring(0, 11);
+
+            }
+            //Console.WriteLine(CedulaSeleccionada);
+        }
+
+
+    private async Task BuscarDireccion() {
+        Pais pais;
+        Provincia provincia;
+
+
+        pais = paises.Where(x => x.Id == int.Parse(PaisSeleccionado)).FirstOrDefault();
+        provincia = provincias.Where(x => x.Id == int.Parse(ProvinciaSeleccionada)).FirstOrDefault();
+
+
+        if (!String.IsNullOrEmpty(CalleDireccion) && !String.IsNullOrEmpty(PaisSeleccionado) && !String.IsNullOrEmpty(ProvinciaSeleccionada)) {
+            GeocodingDireccion = await Http.GetFromJsonAsync<Geocoding>($"https://maps.googleapis.com/maps/api/geocode/json?address={CalleDireccion.Replace(" ", "+")},+{provincia.NombreProvincia.Replace(" ", "+")},+{pais.NombrePais.Replace(" ", "+")}&key=AIzaSyD2tTEiP_uPyq8Re9YnQyD6LkB5TGX1xnw");
+            LatitudDireccion = GeocodingDireccion.Results[0].Geometry.Location.Lat.ToString();
+            LongitudDireccion = GeocodingDireccion.Results[0].Geometry.Location.Lng.ToString();
+            string algo = GeocodingDireccion.Results[0].FormattedAddress;
+            Console.WriteLine(LatitudDireccion);
+            Console.WriteLine(LongitudDireccion);
+
+            mapVisible = true;
+
+        }
     }
-
-
-
 
 
     private async Task AgregarSegundaDosis() {
@@ -173,7 +240,13 @@
 
             } else {
                 //Creando nueva direccion con la provincia seleccionada
-                Direccion direccion = new Direccion() { ProvinciaId = int.Parse(ProvinciaSeleccionada), PaisId = 1 };
+                Direccion direccion = new Direccion() {
+                    ProvinciaId = int.Parse(ProvinciaSeleccionada),
+                    PaisId = int.Parse(PaisSeleccionado),
+                    Calle = CalleDireccion,
+                    Latitud = decimal.Parse(LatitudDireccion),
+                    Logitud = decimal.Parse(LongitudDireccion)
+                };
 
                 var respuesta = await Http.PostAsJsonAsync("api/direcciones", direccion);
 

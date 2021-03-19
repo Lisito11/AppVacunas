@@ -1,44 +1,80 @@
 ﻿@page "/consultar"
 @using System.Globalization;
 @using MudBlazor
+@using Radzen.Blazor
+
 @if (personas == null) {
     <p><em>Loading...</em></p>
 } else {
-    <MudTable Items="@personas" Hover="@true" Striped="@true" Filter="new Func<Persona, bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">Personas Vacunadas </MudText>
-            <MudToolBarSpacer />
-            <MudTextField @bind-Value="searchString" Placeholder="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh>Cedula</MudTh>
-            <MudTh>Nombres </MudTh>
-            <MudTh>Apellidos</MudTh>
-            <MudTh>Telefono</MudTh>
-            <MudTh>Fecha de nacimiento</MudTh>
-            <MudTh>Provincia</MudTh>
-            <MudTh>Primera Dosis</MudTh>
-            <MudTh>Segunda Dosis</MudTh>
-            <MudTh>Vacuna </MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Cedula">@context.Cedula</MudTd>
-            <MudTd DataLabel="Nombres">@context.Nombres</MudTd>
-            <MudTd DataLabel="Apellidos">@context.Apellido1 @context.Apellido2</MudTd>
-            <MudTd DataLabel="Telefono">@context.Telefono</MudTd>
-            <MudTd DataLabel="Fecha de nacimiento">@context.FechaNacimiento</MudTd>
-            <MudTd DataLabel="Provincia">@context.Direccion.Provincia.NombreProvincia</MudTd>
-            <MudTd DataLabel="Primera Dosis">@context.FechaDosis1</MudTd>
-            <MudTd DataLabel="Segunda  Dosis">@context.FechaDosis2</MudTd>
-            <MudTd DataLabel="Vacuna">@context.Vacuna.Nombre</MudTd>
+    <MudButton OnClick="@Modo" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">@modoName</MudButton>
+     <br />
+    if (modoMapa) {
+<MudGrid>
+    <MudItem xs="12">
+        <RadzenGoogleMap style="height: 600px;" Zoom=@zoom Center=@(new Radzen.GoogleMapPosition() { Lat = 18.6176122, Lng = -68.7085308 }) MapClick=@OnMapClick MarkerClick=@OnMarkerClick>
+            <Markers>
+                @foreach (var persona in personas) {
+                    <RadzenGoogleMapMarker  Title="@($"Vacuna: {persona.Vacuna.Nombre}\nCantidad de dosis: {persona.EstatusVacuna}")" Label="@persona.Nombres" Position=@(new Radzen.GoogleMapPosition() { Lat = double.Parse(persona.Direccion.Latitud.Value.ToString()), Lng = double.Parse(persona.Direccion.Logitud.Value.ToString()) }) />
+                }
+            </Markers>
+        </RadzenGoogleMap>
+        </MudItem>
+</MudGrid>
+    } else {
+        <MudTable Items="@personas" Hover="@true" Striped="@true" Filter="new Func<Persona, bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Personas Vacunadas </MudText>
+                <MudToolBarSpacer />
+                <MudTextField @bind-Value="searchString" Placeholder="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Cedula</MudTh>
+                <MudTh>Nombres </MudTh>
+                <MudTh>Apellidos</MudTh>
+                <MudTh>Telefono</MudTh>
+                <MudTh>Fecha de nacimiento</MudTh>
+                <MudTh>Provincia</MudTh>
+                <MudTh>Primera Dosis</MudTh>
+                <MudTh>Segunda Dosis</MudTh>
+                <MudTh>Vacuna </MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Cedula">@context.Cedula</MudTd>
+                <MudTd DataLabel="Nombres">@context.Nombres</MudTd>
+                <MudTd DataLabel="Apellidos">@context.Apellido1 @context.Apellido2</MudTd>
+                <MudTd DataLabel="Telefono">@context.Telefono</MudTd>
+                <MudTd DataLabel="Fecha de nacimiento">@context.FechaNacimiento</MudTd>
+                <MudTd DataLabel="Provincia">@context.Direccion.Provincia.NombreProvincia</MudTd>
+                <MudTd DataLabel="Primera Dosis">@context.FechaDosis1</MudTd>
+                <MudTd DataLabel="Segunda  Dosis">@context.FechaDosis2</MudTd>
+                <MudTd DataLabel="Vacuna">@context.Vacuna.Nombre</MudTd>
 
-        </RowTemplate>
-
-    </MudTable>
+            </RowTemplate>
+        </MudTable>
+    }
 }
 @code {
+    string modoName = "Modo Mapa";
+    bool modoMapa = false;
+    int zoom = 8;
 
+    private void Modo() {
+        if (modoMapa) {
+            modoName = "Modo Mapa";
+            modoMapa = false;
+        } else {
+            modoMapa = true;
+            modoName = "Modo Lista";
+        }
 
+    }
+    void OnMapClick(Radzen.GoogleMapClickEventArgs args) {
+        Console.WriteLine($"Map clicked at Lat: {args.Position.Lat}, Lng: {args.Position.Lng}");
+    }
+
+    void OnMarkerClick(RadzenGoogleMapMarker marker) {
+        Console.WriteLine($"Map {marker.Title} marker clicked. Marker position -> Lat: {marker.Position.Lat}, Lng: {marker.Position.Lng}");
+    }
     private HashSet<Persona> selectedItems = new HashSet<Persona>();
 
     private List<Persona> personas = new List<Persona>();
@@ -49,10 +85,7 @@
 
     protected override async Task OnInitializedAsync() {
         personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
-
     }
-
-
 
     private bool FilterFunc(Persona persona) {
         if (string.IsNullOrWhiteSpace(searchString))
@@ -65,17 +98,11 @@
             return true;
         if (persona.Telefono.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (persona.FechaNacimiento.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
         if (persona.Direccion.Provincia.NombreProvincia.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (persona.FechaDosis1.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (persona.FechaDosis2.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         if (persona.Vacuna.Nombre.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{persona.Nombres} {persona.Apellido1} {persona.Apellido2} {persona.Telefono} {persona.FechaNacimiento.ToString()} {persona.Direccion.Provincia.NombreProvincia} {persona.FechaDosis1.ToString()} {persona.FechaDosis2.ToString()} {persona.Vacuna.Nombre}".Contains(searchString))
+        if ($"{persona.Nombres} {persona.Apellido1} {persona.Apellido2} {persona.Telefono} {persona.Direccion.Provincia.NombreProvincia} {persona.Vacuna.Nombre}".Contains(searchString))
             return true;
         return false;
     }
