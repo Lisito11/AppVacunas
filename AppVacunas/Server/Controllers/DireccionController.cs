@@ -30,7 +30,7 @@ namespace AppVacunas.Server.Controllers {
         public async Task<ActionResult<List<DireccionDTO>>> GetProvincias() {
             var direcciones = await context.Direcciones.Include(x => x.Provincia).Include(x => x.Personas).ToListAsync();
 
-            dynamic provincias() => context.Direcciones.GroupBy(p => p.Provincia).Select(group => new {
+            dynamic provincias() =>  context.Direcciones.GroupBy(p => p.Provincia).Select(group => new {
                 NombreCategoria = group.Key,
                 CantidadProducto = group.Count()
             });

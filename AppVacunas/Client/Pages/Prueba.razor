@@ -1,214 +1,101 @@
-﻿@page "/ejercicio1"
+﻿@page "/map"
+@using GoogleMapsComponents
+@using GoogleMapsComponents.Maps
+@using System.Diagnostics
 
-<h1>Personas</h1>
+<h1>Google Map Markers</h1>
 
-@if (personas == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table m-2">
-        <thead>
-            <tr>
-                <th>Acuario</th>
-                <th>Piscis</th>
-                <th>Aries</th>
-                <th>Tauro</th>
-                <th>Geminis</th>
-                <th>Cancer</th>
-                <th>Leo</th>
-                <th>Virgo</th>
-                <th>Libra</th>
-                <th>Escorpio</th>
-                <th>Sagitario</th>
-                <th>Capricornio</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>@Acuario</td>
-                <td>@Piscis</td>
-                <td>@Aries</td>
-                <td>@Tauro</td>
-                <td>@Geminis</td>
-                <td>@Cancer</td>
-                <td>@Leo</td>
-                <td>@Virgo</td>
-                <td>@Libra</td>
-                <td>@Escorpio</td>
-                <td>@Sagitario</td>
-                <td>@Capricornio</td>
-            </tr>
+<GoogleMap @ref="@map1" Id="map1" Options="@mapOptions"></GoogleMap>
+<MudButton OnClick="AddMarker" Variant="Variant.Filled" Color="Color.Primary">Add marker</MudButton>
+<MudButton OnClick="RemoveMarker" Variant="Variant.Filled" Color="Color.Primary">Remove markerr</MudButton>
+<MudButton OnClick="Recenter" Variant="Variant.Filled" Color="Color.Primary">Re-center marker</MudButton>
 
 
-        </tbody>
-    </table>
-}
+@*<MapEventList @ref="@eventList" Events="@_events"></MapEventList>*@
 
+@functions {
+    private GoogleMap map1;
 
-@code {
+    private MapOptions mapOptions;
 
-    private List<Persona> personas;
+    private Stack<Marker> markers = new Stack<Marker>();
 
-    protected override async Task OnInitializedAsync()
-    {
-        personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
+    private List<String> _events = new List<String>();
 
-        foreach (var persona in personas)
-        {
+    //private MapEventListener eventList;
 
-            switch (GetSigno(persona.FechaNacimiento.Value.ToString("yyyy-MM-dd")))
-            {
-                case 1: Acuario++;
-                    break;
-                case 2:
-                    Piscis++;
-                    break;
-                case 3:
-                    Aries++;
-                    break;
-                case 4:
-                    Tauro++;
-                    break;
-                case 5:
-                    Geminis++;
-                    break;
-                case 6:
-                    Cancer++;
-                    break;
-                case 7:
-                    Leo++;
-                    break;
-                case 8:
-                    Virgo++;
-                    break;
-                case 9:
-                    Libra++;
-                    break;
-                case 10:
-                    Escorpio++;
-                    break;
-                case 11:
-                    Sagitario++;
-                    break;
-                case 12:
-                    Capricornio++;
-                    break;
+    protected override void OnInitialized() {
+        mapOptions = new MapOptions() {
+            Zoom = 13,
+            Center = new LatLngLiteral() {
+                Lat = 13.505892,
+                Lng = 100.8162
+            },
+            MapTypeId = MapTypeId.Roadmap
+        };
+    }
+
+    private async Task AddMarker() {
+        var marker = await Marker.CreateAsync(map1.JsRuntime, new MarkerOptions() {
+            Position = await map1.InteropObject.GetCenter(),
+            Map = map1.InteropObject,
+            Label = $"Test {markers.Count()}",
+            Icon = new Icon() {
+                Url = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
             }
+            //Icon = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+        });
 
-        }
+        //await marker.SetMap(map1);
 
+        //var map = await marker.GetMap();
+
+        var icon = await marker.GetIcon();
+
+        Console.WriteLine($"Get icon result type is : {icon.Value.GetType()}");
+
+        icon.Switch(
+            s => Console.WriteLine(s),
+            i => Console.WriteLine(i.Url),
+            _ => { });
+
+        //if (map == map1.InteropObject)
+        //{
+        //    Console.WriteLine("Yess");
+        //}
+        //else
+        //{
+        //    Console.WriteLine("Nooo");
+        //}
+
+        markers.Push(marker);
+
+        await marker.AddListener<GoogleMapsComponents.Maps.MouseEvent>("click", async e => {
+            var markerLabel = await marker.GetLabel();
+            _events.Add("click on " + markerLabel);
+            StateHasChanged();
+
+            await e.Stop();
+        });
     }
 
-    public int Acuario { get; set; }
-    public int Piscis { get; set; }
-    public int Aries { get; set; }
-    public int Tauro { get; set; }
-    public int Geminis { get; set; }
-    public int Cancer { get; set; }
-    public int Leo { get; set; }
-    public int Virgo { get; set; }
-    public int Libra { get; set; }
-    public int Escorpio { get; set; }
-    public int Sagitario { get; set; }
-    public int Capricornio { get; set; }
-
-
-    public int GetSigno(string fecha)
-    {
-        string mes;
-        int dia;
-
-
-        mes = fecha.Substring(5, 2);
-        dia = int.Parse(fecha.Substring(8, 2));
-
-        Console.WriteLine(mes);
-        Console.WriteLine(dia);
-
-        // Acuario
-        // Enero 20 hasta Febrero 18
-        if ((mes == "01" && dia >= 20) || (mes == "02" && dia <= 18))
-        {
-            return 1;
+    private async Task RemoveMarker() {
+        if (!markers.Any()) {
+            return;
         }
 
-        //Piscis
-        //Febrero 19 hasta marzo 20
-        if ((mes == "02" && dia >= 19) || (mes == "03" && dia <= 20))
-        {
-            return 2;
-        }
-
-        //Aries
-        //marzo 21 hasta abril 19
-        if ((mes == "03" && dia >= 21) || (mes == "04" && dia <= 19))
-        {
-            return 3;
-        }
-
-        //Tauro
-        //Abril 20 hasta Mayo 20
-        if ((mes == "04" && dia >= 20) || (mes == "05" && dia <= 20))
-        {
-            return 4;
-        }
-
-        //Gemenis
-        //Mayo 21 hasta Junio 20
-        if ((mes == "05" && dia >= 20) || (mes == "06" && dia <= 20))
-        {
-            return 5;
-        }
-
-        //Cancer
-        //Junio 21 hasta Julio 22
-        if ((mes == "06" && dia >= 21) || (mes == "07" && dia <= 22))
-        {
-            return 6;
-        }
-        //Leo
-        //Julio 23 hasta Agosto 22
-        if ((mes == "07" && dia >= 23) || (mes == "08" && dia <= 22))
-        {
-            return 7;
-        }
-
-        //Virgo
-        //Agosto 23 hasta Septiembre 22
-        if ((mes == "08" && dia >= 23) || (mes == "09" && dia <= 22))
-        {
-            return 8;
-        }
-
-        //Libra
-        //Septiembre 23 hasta Octubre 22
-        if ((mes == "09" && dia >= 23) || (mes == "10" && dia <= 22))
-        {
-            return 9;
-        }
-
-        //Escorpio
-        //Octubre 23 hasta Noviembre 21
-        if ((mes == "10" && dia >= 23) || (mes == "11" && dia <= 21))
-        {
-            return 10;
-        }
-        //Sagitario
-        //Noviembre 22 hasta Diciembre 21
-        if ((mes == "11" && dia >= 22) || (mes == "12" && dia <= 21))
-        {
-            return 11;
-        }
-        //Capricornio
-        //Diciembre 22 hasta Enero 19
-        if ((mes == "12" && dia >= 22) || (mes == "01" && dia <= 19))
-        {
-            return 12;
-        }
-
-        return 0;
-
+        var lastMarker = markers.Pop();
+        await lastMarker.SetMap(null);
     }
+
+    private async Task Recenter() {
+        if (!markers.Any()) {
+            return;
+        }
+
+        var lastMarker = markers.Peek();
+        var center = await map1.InteropObject.GetCenter();
+        await lastMarker.SetPosition(center);
+    }
+
 }

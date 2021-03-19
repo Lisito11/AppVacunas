@@ -1,6 +1,7 @@
 ﻿@page "/registrar"
 @inject ISnackbar Snackbar
 @using Helpers
+@inject IJSRuntime jsRuntime
 <h1>Registrar Vacunado</h1>
 
 @inject NavigationManager navigationManager
@@ -29,7 +30,7 @@
 
 
                         <MudDatePicker Label="Fecha Primera Dosis" @bind-Date="fechaPrimeraDosis" />
-
+                        
                     </MudForm>
                 </MudCardContent>
                 <MudCardActions>
@@ -53,7 +54,7 @@
                         <MudDivider DividerType="DividerType.Middle" Class="my-6" />
                         <MudText Typo="Typo.body1">Primera dosis: @PrimeraDosisValidada</MudText>
                     </MudPaper>
-                    <MudDatePicker Label="Fecha Segunda Dosis" @bind-Date="fechaSegundaDosis" Editable="true" TitleDateFormat="yyyy-MM-dd"/>
+                    <MudDatePicker Label="Fecha Segunda Dosis" @bind-Date="fechaSegundaDosis" Editable="true" TitleDateFormat="yyyy-MM-dd" />
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton OnClick="AgregarSegundaDosis" Variant="Variant.Filled" Color="Color.Primary">Agregar Segunda Dosis</MudButton>
@@ -66,15 +67,23 @@
 
 
 @code{
+    protected override async Task OnInitializedAsync() {
+        personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
+        provincias = await Http.GetFromJsonAsync<List<Provincia>>("api/provincias");
+        vacunas = await Http.GetFromJsonAsync<List<Vacuna>>("api/vacunas");
+    }
 
-        bool success;
-        bool visible = false;
-        string[] errors = { };
-        MudForm form;
-        string MensajeError(string field) => $"{field} debe introducirse!";
+    //Mapa opciones
 
-        DateTime? fechaPrimeraDosis = DateTime.Today;
-        DateTime? fechaSegundaDosis = DateTime.Today;
+
+    bool success;
+    bool visible = false;
+    string[] errors = { };
+    MudForm form;
+    string MensajeError(string field) => $"{field} debe introducirse!";
+
+    DateTime? fechaPrimeraDosis = DateTime.Today;
+    DateTime? fechaSegundaDosis = DateTime.Today;
 
     public string Nombres { get; set; }
     public string Apellido1 { get; set; }
@@ -118,24 +127,11 @@
     }
 
 
-    protected override async Task OnInitializedAsync() {
-        personas = await Http.GetFromJsonAsync<List<Persona>>("api/personas");
-        provincias = await Http.GetFromJsonAsync<List<Provincia>>("api/provincias");
-        vacunas = await Http.GetFromJsonAsync<List<Vacuna>>("api/vacunas");
-    }
+
 
 
     private async Task AgregarSegundaDosis() {
-        /*personaEdit.Nombres = Nombres;
-        personaEdit.Apellido1 = Apellido1;
-        personaEdit.Apellido2 = Apellido2;
-        personaEdit.Cedula = CedulaSeleccionada;
-        personaEdit.Telefono = Telefono;
-        personaEdit.DireccionId = direccionPersona.Id;
-        personaEdit.FechaDosis1 = fechaPrimeraDosis;
-        personaEdit.FechaNacimiento = DateTime.Parse(FechaNacimiento);
-        personaEdit.VacunaId = int.Parse(VacunaSeleccionada);
-        personaEdit.EstatusVacuna = 1;*/
+
         string json = "[{\"op\": \"replace\",\"path\": \"/fechaDosis2\",\"value\":" + $"\"{fechaSegundaDosis.Value.ToString("yyyy-MM-dd")}\"" + "}]";
 
         HttpContent content = new StringContent(json, Encoding.UTF8, "application/json-patch+json");
@@ -159,20 +155,17 @@
         PersonaValidada = personas.Where(x => x.Cedula == CedulaSeleccionada).FirstOrDefault();
 
         if (PersonaValidada != null) {
-            if (PersonaValidada.FechaDosis2 == null)
-            {
+            if (PersonaValidada.FechaDosis2 == null) {
                 visible = true;
                 Snackbar.Add($"{Nombres} {Apellido1} {Apellido2} Ya se cuentra registrado!", Severity.Info);
                 PrimeraDosisValidada = PersonaValidada.FechaDosis1.ToString().Substring(0, 9);
-            }
-            else
-            {
+            } else {
                 Snackbar.Add($"{Nombres} {Apellido1} Ya se encuentra registrado y con segunda dosis!", Severity.Info);
                 navigationManager.NavigateTo("consultar");
             }
 
         } else {
-            vacuna = vacunas.Where(x => x.Id== int.Parse(VacunaSeleccionada)).FirstOrDefault();
+            vacuna = vacunas.Where(x => x.Id == int.Parse(VacunaSeleccionada)).FirstOrDefault();
 
             if (vacuna.CantidadVacuna <= 0) {
                 Snackbar.Add($"No se puede vacunar, no quedan vacunas {vacuna.Nombre}", Severity.Error);

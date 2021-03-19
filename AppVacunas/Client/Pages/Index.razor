@@ -1,24 +1,25 @@
 ﻿@page "/"
+@using MudBlazor
 <MudGrid>
     <MudItem xs="12">
         <MudGrid Spacing="3" Justify="Justify.FlexStart">
             @foreach (var card in cardsPaginas) {
-            <MudItem Class="m-4">
-                <MudLink Href="@card.Link" Underline="Underline.None" Class="text-center" Color="Color.Inherit">
-                    <MudCard Style="height:120px; width:200px;">
-                        <MudCardContent>
-                            <div>
-                                <MudIcon Icon="@card.Icono" Size="Size.Large"></MudIcon>
-                            </div>
-                            <div>
-                                <h6 class="mat-subtitle2">@card.Nombre</h6>
-                            </div>
-                        </MudCardContent>
+                <MudItem Class="m-4">
+                    <MudLink Href="@card.Link" Underline="Underline.None" Class="text-center" Color="Color.Inherit">
+                        <MudCard Style="height:120px; width:200px;">
+                            <MudCardContent>
+                                <div>
+                                    <MudIcon Icon="@card.Icono" Size="MudBlazor.Size.Large"></MudIcon>
+                                </div>
+                                <div>
+                                    <h6 class="mat-subtitle2">@card.Nombre</h6>
+                                </div>
+                            </MudCardContent>
 
-                    </MudCard>
-                </MudLink>
+                        </MudCard>
+                    </MudLink>
 
-            </MudItem>
+                </MudItem>
             }
         </MudGrid>
     </MudItem>
