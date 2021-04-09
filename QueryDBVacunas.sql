@@ -98,3 +98,36 @@ CREATE TABLE persona (
     vacuna_id int, constraint fk_persona_vacuna foreign key (vacuna_id) references vacuna(vacuna_id)
 );
 
+Provincias Data
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Azua', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Bahoruco', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Barahona', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Dajabón', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Distrito Nacional', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Duarte', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Elías Piña', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('El Seibo', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Espaillat', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Hato Mayor', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Hermanas Mirabal', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Independencia', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('La Altagracia', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('La Romana', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('La Vega', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('María Trinidad Sánchez', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Monseñor Nouel', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Monte Cristi', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Monte Plata', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Pedernales', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Peravia', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Puerto Plata', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Samaná', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('San Cristóbal', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('San José de Ocoa', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('San Juan', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('San Pedro de Macorís', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Sánchez Ramírez', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Santiago', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Santiago Rodríguez', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Santo Domingo', 1);
+INSERT INTO provincia (nombre_provincia, pais_id) VALUES ('Valverde', 1);
